@@ -78,14 +78,18 @@ export function setupAuth(app: Express) {
         return res.status(400).json({ message: "Email already registered" });
       }
 
+      const hashedPassword = await hashPassword(req.body.password);
       const user = await storage.createUser({
         ...req.body,
-        password: await hashPassword(req.body.password),
+        password: hashedPassword,
+        lastLogin: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
       });
 
       req.login(user, (err) => {
         if (err) {
-          return res.status(500).json({ message: "Login failed after registration" });
+          next(err);
+          return;
         }
         res.status(201).json(user);
       });
