@@ -1,14 +1,23 @@
 import {
+  type User, type InsertUser,
   type Habit, type InsertHabit,
   type HabitLog, type InsertHabitLog,
   type Expense, type InsertExpense,
   type Budget, type InsertBudget,
-  type ChatMessage, type InsertChatMessage
+  type ChatMessage, type InsertChatMessage,
+  type Notification, type InsertNotification
 } from "@shared/schema";
 
 export interface IStorage {
+  // Users
+  getUser(id: number): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
+  createUser(user: InsertUser): Promise<User>;
+  updateUserStreak(id: number, streak: number): Promise<void>;
+  updateUserTheme(id: number, theme: string): Promise<void>;
+
   // Habits
-  getHabits(): Promise<Habit[]>;
+  getHabits(userId: number): Promise<Habit[]>;
   getHabit(id: number): Promise<Habit | undefined>;
   createHabit(habit: InsertHabit): Promise<Habit>;
   archiveHabit(id: number): Promise<void>;
@@ -18,44 +27,97 @@ export interface IStorage {
   createHabitLog(log: InsertHabitLog): Promise<HabitLog>;
 
   // Expenses
-  getExpenses(): Promise<Expense[]>;
+  getExpenses(userId: number): Promise<Expense[]>;
   createExpense(expense: InsertExpense): Promise<Expense>;
 
   // Budgets
-  getBudgets(): Promise<Budget[]>;
+  getBudgets(userId: number): Promise<Budget[]>;
   createBudget(budget: InsertBudget): Promise<Budget>;
 
   // Chat Messages
-  getChatMessages(): Promise<ChatMessage[]>;
+  getChatMessages(userId: number): Promise<ChatMessage[]>;
   createChatMessage(message: InsertChatMessage): Promise<ChatMessage>;
+
+  // Notifications
+  getNotifications(userId: number): Promise<Notification[]>;
+  createNotification(notification: InsertNotification): Promise<Notification>;
+  markNotificationRead(id: number): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
+  private users: Map<number, User>;
   private habits: Map<number, Habit>;
   private habitLogs: Map<number, HabitLog>;
   private expenses: Map<number, Expense>;
   private budgets: Map<number, Budget>;
   private chatMessages: Map<number, ChatMessage>;
+  private notifications: Map<number, Notification>;
   private currentIds: { [key: string]: number };
 
   constructor() {
+    this.users = new Map();
     this.habits = new Map();
     this.habitLogs = new Map();
     this.expenses = new Map();
     this.budgets = new Map();
     this.chatMessages = new Map();
+    this.notifications = new Map();
     this.currentIds = {
+      users: 1,
       habits: 1,
       habitLogs: 1,
       expenses: 1,
       budgets: 1,
-      chatMessages: 1
+      chatMessages: 1,
+      notifications: 1
     };
   }
 
+  // Users
+  async getUser(id: number): Promise<User | undefined> {
+    return this.users.get(id);
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    return Array.from(this.users.values()).find(user => user.email === email);
+  }
+
+  async createUser(user: InsertUser): Promise<User> {
+    const id = this.currentIds.users++;
+    const now = new Date().toISOString();
+    const newUser = {
+      ...user,
+      id,
+      avatar: null,
+      theme: "system",
+      streak: 0,
+      lastLogin: now,
+      createdAt: now
+    };
+    this.users.set(id, newUser);
+    return newUser;
+  }
+
+  async updateUserStreak(id: number, streak: number): Promise<void> {
+    const user = this.users.get(id);
+    if (user) {
+      user.streak = streak;
+      this.users.set(id, user);
+    }
+  }
+
+  async updateUserTheme(id: number, theme: string): Promise<void> {
+    const user = this.users.get(id);
+    if (user) {
+      user.theme = theme;
+      this.users.set(id, user);
+    }
+  }
+
   // Habits
-  async getHabits(): Promise<Habit[]> {
-    return Array.from(this.habits.values()).filter(h => !h.isArchived);
+  async getHabits(userId: number): Promise<Habit[]> {
+    return Array.from(this.habits.values())
+      .filter(h => h.userId === userId && !h.isArchived);
   }
 
   async getHabit(id: number): Promise<Habit | undefined> {
@@ -64,11 +126,12 @@ export class MemStorage implements IStorage {
 
   async createHabit(habit: InsertHabit): Promise<Habit> {
     const id = this.currentIds.habits++;
-    const newHabit = { 
-      ...habit, 
-      id, 
+    const newHabit = {
+      ...habit,
+      id,
+      streak: 0,
       isArchived: false,
-      streak: 0 // Add default streak
+      description: habit.description || null
     };
     this.habits.set(id, newHabit);
     return newHabit;
@@ -96,8 +159,9 @@ export class MemStorage implements IStorage {
   }
 
   // Expenses
-  async getExpenses(): Promise<Expense[]> {
-    return Array.from(this.expenses.values());
+  async getExpenses(userId: number): Promise<Expense[]> {
+    return Array.from(this.expenses.values())
+      .filter(e => e.userId === userId);
   }
 
   async createExpense(expense: InsertExpense): Promise<Expense> {
@@ -108,8 +172,9 @@ export class MemStorage implements IStorage {
   }
 
   // Budgets
-  async getBudgets(): Promise<Budget[]> {
-    return Array.from(this.budgets.values());
+  async getBudgets(userId: number): Promise<Budget[]> {
+    return Array.from(this.budgets.values())
+      .filter(b => b.userId === userId);
   }
 
   async createBudget(budget: InsertBudget): Promise<Budget> {
@@ -120,22 +185,47 @@ export class MemStorage implements IStorage {
   }
 
   // Chat Messages
-  async getChatMessages(): Promise<ChatMessage[]> {
+  async getChatMessages(userId: number): Promise<ChatMessage[]> {
     return Array.from(this.chatMessages.values())
+      .filter(m => m.userId === userId)
       .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
   }
 
   async createChatMessage(message: InsertChatMessage): Promise<ChatMessage> {
     const id = this.currentIds.chatMessages++;
-    // For development, use a default userId of 1
-    const newMessage = { 
-      ...message, 
+    const newMessage = {
+      ...message,
       id,
-      userId: 1, // Default user ID for development
-      language: message.language || 'en' // Ensure language is set
+      language: message.language || 'en'
     };
     this.chatMessages.set(id, newMessage);
     return newMessage;
+  }
+
+  // Notifications
+  async getNotifications(userId: number): Promise<Notification[]> {
+    return Array.from(this.notifications.values())
+      .filter(n => n.userId === userId)
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }
+
+  async createNotification(notification: InsertNotification): Promise<Notification> {
+    const id = this.currentIds.notifications++;
+    const newNotification = {
+      ...notification,
+      id,
+      isRead: false
+    };
+    this.notifications.set(id, newNotification);
+    return newNotification;
+  }
+
+  async markNotificationRead(id: number): Promise<void> {
+    const notification = this.notifications.get(id);
+    if (notification) {
+      notification.isRead = true;
+      this.notifications.set(id, notification);
+    }
   }
 }
 
