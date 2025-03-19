@@ -86,12 +86,22 @@ export function setupAuth(app: Express) {
         createdAt: new Date().toISOString(),
       });
 
-      req.login(user, (err) => {
-        if (err) {
-          res.status(500).json({ message: "Login failed after registration" });
-          return;
-        }
-        res.status(201).json(user);
+      await new Promise<void>((resolve, reject) => {
+        req.login(user, (err) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve();
+          }
+        });
+      });
+      
+      res.status(201).json({ 
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        createdAt: user.createdAt,
+        lastLogin: user.lastLogin
       });
     } catch (error) {
       console.error('Registration error:', error);
