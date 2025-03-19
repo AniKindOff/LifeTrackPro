@@ -7,103 +7,156 @@ import { generateHabitInsights, generateFinanceInsights } from './services/insig
 
 export async function registerRoutes(app: Express) {
   // Habits
-  app.get("/api/habits", async (_req, res) => {
-    const habits = await storage.getHabits();
-    res.json(habits);
+  app.get("/api/habits", async (req, res) => {
+    if (!req.user) return res.status(401).json({ message: "Unauthorized" });
+    try {
+      const habits = await storage.getHabits(req.user.id);
+      res.json(habits);
+    } catch (error) {
+      console.error('Error fetching habits:', error);
+      res.status(500).json({ message: "Failed to fetch habits" });
+    }
   });
 
   app.post("/api/habits", async (req, res) => {
-    const result = insertHabitSchema.safeParse(req.body);
-    if (!result.success) {
-      res.status(400).json({ message: "Invalid habit data" });
-      return;
+    if (!req.user) return res.status(401).json({ message: "Unauthorized" });
+    try {
+      const result = insertHabitSchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ message: "Invalid habit data", errors: result.error.errors });
+      }
+      const habit = await storage.createHabit({ ...result.data, userId: req.user.id });
+      res.json(habit);
+    } catch (error) {
+      console.error('Error creating habit:', error);
+      res.status(500).json({ message: "Failed to create habit" });
     }
-    const habit = await storage.createHabit(result.data);
-    res.json(habit);
   });
 
   app.post("/api/habits/:id/archive", async (req, res) => {
-    await storage.archiveHabit(Number(req.params.id));
-    res.json({ success: true });
+    if (!req.user) return res.status(401).json({ message: "Unauthorized" });
+    try {
+      await storage.archiveHabit(Number(req.params.id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error archiving habit:', error);
+      res.status(500).json({ message: "Failed to archive habit" });
+    }
   });
 
   // Habit Logs
   app.get("/api/habits/:id/logs", async (req, res) => {
-    const logs = await storage.getHabitLogs(Number(req.params.id));
-    res.json(logs);
+    if (!req.user) return res.status(401).json({ message: "Unauthorized" });
+    try {
+      const logs = await storage.getHabitLogs(Number(req.params.id));
+      res.json(logs);
+    } catch (error) {
+      console.error('Error fetching habit logs:', error);
+      res.status(500).json({ message: "Failed to fetch habit logs" });
+    }
   });
 
   app.post("/api/habits/:id/logs", async (req, res) => {
-    const result = insertHabitLogSchema.safeParse(req.body);
-    if (!result.success) {
-      res.status(400).json({ message: "Invalid log data" });
-      return;
+    if (!req.user) return res.status(401).json({ message: "Unauthorized" });
+    try {
+      const result = insertHabitLogSchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ message: "Invalid log data", errors: result.error.errors });
+      }
+      const log = await storage.createHabitLog({...result.data, userId: req.user.id});
+      res.json(log);
+    } catch (error) {
+      console.error('Error creating habit log:', error);
+      res.status(500).json({ message: "Failed to create habit log" });
     }
-    const log = await storage.createHabitLog(result.data);
-    res.json(log);
   });
 
   // Expenses
-  app.get("/api/expenses", async (_req, res) => {
-    const expenses = await storage.getExpenses();
-    res.json(expenses);
+  app.get("/api/expenses", async (req, res) => {
+    if (!req.user) return res.status(401).json({ message: "Unauthorized" });
+    try {
+      const expenses = await storage.getExpenses(req.user.id);
+      res.json(expenses);
+    } catch (error) {
+      console.error('Error fetching expenses:', error);
+      res.status(500).json({ message: "Failed to fetch expenses" });
+    }
   });
 
   app.post("/api/expenses", async (req, res) => {
-    const result = insertExpenseSchema.safeParse(req.body);
-    if (!result.success) {
-      res.status(400).json({ message: "Invalid expense data" });
-      return;
+    if (!req.user) return res.status(401).json({ message: "Unauthorized" });
+    try {
+      const result = insertExpenseSchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ message: "Invalid expense data", errors: result.error.errors });
+      }
+      const expense = await storage.createExpense({ ...result.data, userId: req.user.id });
+      res.json(expense);
+    } catch (error) {
+      console.error('Error creating expense:', error);
+      res.status(500).json({ message: "Failed to create expense" });
     }
-    const expense = await storage.createExpense(result.data);
-    res.json(expense);
   });
 
   // Budgets
-  app.get("/api/budgets", async (_req, res) => {
-    const budgets = await storage.getBudgets();
-    res.json(budgets);
+  app.get("/api/budgets", async (req, res) => {
+    if (!req.user) return res.status(401).json({ message: "Unauthorized" });
+    try {
+      const budgets = await storage.getBudgets(req.user.id);
+      res.json(budgets);
+    } catch (error) {
+      console.error('Error fetching budgets:', error);
+      res.status(500).json({ message: "Failed to fetch budgets" });
+    }
   });
 
   app.post("/api/budgets", async (req, res) => {
-    const result = insertBudgetSchema.safeParse(req.body);
-    if (!result.success) {
-      res.status(400).json({ message: "Invalid budget data" });
-      return;
+    if (!req.user) return res.status(401).json({ message: "Unauthorized" });
+    try {
+      const result = insertBudgetSchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ message: "Invalid budget data", errors: result.error.errors });
+      }
+      const budget = await storage.createBudget({ ...result.data, userId: req.user.id });
+      res.json(budget);
+    } catch (error) {
+      console.error('Error creating budget:', error);
+      res.status(500).json({ message: "Failed to create budget" });
     }
-    const budget = await storage.createBudget(result.data);
-    res.json(budget);
   });
 
   // Chat routes
-  app.get("/api/chat/messages", async (_req, res) => {
-    const messages = await storage.getChatMessages();
-    res.json(messages);
+  app.get("/api/chat/messages", async (req, res) => {
+    if (!req.user) return res.status(401).json({ message: "Unauthorized" });
+    try {
+      const messages = await storage.getChatMessages(req.user.id);
+      res.json(messages);
+    } catch (error) {
+      console.error('Error fetching chat messages:', error);
+      res.status(500).json({ message: "Failed to fetch chat messages" });
+    }
   });
 
   app.post("/api/chat/messages", async (req, res) => {
+    if (!req.user) return res.status(401).json({ message: "Unauthorized" });
     const { content } = req.body;
 
     try {
-      // Detect language
       const language = await detectLanguage(content);
 
-      // Save user message
       const userMessage = await storage.createChatMessage({
-        userId: 1, // Default user ID for development
+        userId: req.user.id,
         role: 'user',
         content,
         language,
         timestamp: new Date().toISOString()
       });
 
-      // Generate response
-      const messages = await storage.getChatMessages();
+      const messages = await storage.getChatMessages(req.user.id);
       const response = await generateChatResponse(messages, language);
 
-      // Save assistant response
       const assistantMessage = await storage.createChatMessage({
-        userId: 1, // Default user ID for development
+        userId: req.user.id,
         role: 'assistant',
         content: response,
         language,
@@ -121,9 +174,10 @@ export async function registerRoutes(app: Express) {
   });
 
   // Insights routes
-  app.get("/api/insights/habits", async (_req, res) => {
+  app.get("/api/insights/habits", async (req, res) => {
+    if (!req.user) return res.status(401).json({ message: "Unauthorized" });
     try {
-      const habits = await storage.getHabits(1); // Using default user ID
+      const habits = await storage.getHabits(req.user.id);
       const insights = await generateHabitInsights(habits);
       res.json(insights);
     } catch (error) {
@@ -135,9 +189,10 @@ export async function registerRoutes(app: Express) {
     }
   });
 
-  app.get("/api/insights/finances", async (_req, res) => {
+  app.get("/api/insights/finances", async (req, res) => {
+    if (!req.user) return res.status(401).json({ message: "Unauthorized" });
     try {
-      const expenses = await storage.getExpenses(1); // Using default user ID
+      const expenses = await storage.getExpenses(req.user.id);
       const insights = await generateFinanceInsights(expenses);
       res.json(insights);
     } catch (error) {
@@ -148,7 +203,6 @@ export async function registerRoutes(app: Express) {
       });
     }
   });
-
 
   const httpServer = createServer(app);
   return httpServer;

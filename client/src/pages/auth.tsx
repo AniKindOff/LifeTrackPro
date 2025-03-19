@@ -19,7 +19,21 @@ import {
 } from "@/components/ui/tabs";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertUserSchema } from "@shared/schema";
+import { z } from "zod";
+
+const loginSchema = z.object({
+  email: z.string().email("Please enter a valid email"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+const registerSchema = z.object({
+  username: z.string().min(3, "Username must be at least 3 characters"),
+  email: z.string().email("Please enter a valid email"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+type LoginData = z.infer<typeof loginSchema>;
+type RegisterData = z.infer<typeof registerSchema>;
 
 export default function AuthPage() {
   const [, setLocation] = useLocation();
@@ -32,13 +46,26 @@ export default function AuthPage() {
     }
   }, [user, setLocation]);
 
-  const loginForm = useForm({
-    resolver: zodResolver(insertUserSchema),
+  const loginForm = useForm<LoginData>({
+    resolver: zodResolver(loginSchema),
   });
 
-  const registerForm = useForm({
-    resolver: zodResolver(insertUserSchema),
+  const registerForm = useForm<RegisterData>({
+    resolver: zodResolver(registerSchema),
   });
+
+  const handleLogin = (data: LoginData) => {
+    loginMutation.mutate(data);
+  };
+
+  const handleRegister = (data: RegisterData) => {
+    const now = new Date().toISOString();
+    registerMutation.mutate({
+      ...data,
+      lastLogin: now,
+      createdAt: now,
+    });
+  };
 
   return (
     <div className="min-h-screen grid grid-cols-1 md:grid-cols-2">
@@ -59,9 +86,7 @@ export default function AuthPage() {
 
               <TabsContent value="login">
                 <form
-                  onSubmit={loginForm.handleSubmit((data) =>
-                    loginMutation.mutate(data)
-                  )}
+                  onSubmit={loginForm.handleSubmit(handleLogin)}
                   className="space-y-4"
                 >
                   <div className="space-y-2">
@@ -71,6 +96,11 @@ export default function AuthPage() {
                       type="email"
                       {...loginForm.register("email")}
                     />
+                    {loginForm.formState.errors.email && (
+                      <p className="text-sm text-destructive">
+                        {loginForm.formState.errors.email.message}
+                      </p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="password">Password</Label>
@@ -79,22 +109,25 @@ export default function AuthPage() {
                       type="password"
                       {...loginForm.register("password")}
                     />
+                    {loginForm.formState.errors.password && (
+                      <p className="text-sm text-destructive">
+                        {loginForm.formState.errors.password.message}
+                      </p>
+                    )}
                   </div>
                   <Button
                     type="submit"
                     className="w-full"
                     disabled={loginMutation.isPending}
                   >
-                    Sign In
+                    {loginMutation.isPending ? "Signing in..." : "Sign In"}
                   </Button>
                 </form>
               </TabsContent>
 
               <TabsContent value="register">
                 <form
-                  onSubmit={registerForm.handleSubmit((data) =>
-                    registerMutation.mutate(data)
-                  )}
+                  onSubmit={registerForm.handleSubmit(handleRegister)}
                   className="space-y-4"
                 >
                   <div className="space-y-2">
@@ -103,6 +136,11 @@ export default function AuthPage() {
                       id="username"
                       {...registerForm.register("username")}
                     />
+                    {registerForm.formState.errors.username && (
+                      <p className="text-sm text-destructive">
+                        {registerForm.formState.errors.username.message}
+                      </p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
@@ -111,6 +149,11 @@ export default function AuthPage() {
                       type="email"
                       {...registerForm.register("email")}
                     />
+                    {registerForm.formState.errors.email && (
+                      <p className="text-sm text-destructive">
+                        {registerForm.formState.errors.email.message}
+                      </p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="password">Password</Label>
@@ -119,13 +162,18 @@ export default function AuthPage() {
                       type="password"
                       {...registerForm.register("password")}
                     />
+                    {registerForm.formState.errors.password && (
+                      <p className="text-sm text-destructive">
+                        {registerForm.formState.errors.password.message}
+                      </p>
+                    )}
                   </div>
                   <Button
                     type="submit"
                     className="w-full"
                     disabled={registerMutation.isPending}
                   >
-                    Create Account
+                    {registerMutation.isPending ? "Creating Account..." : "Create Account"}
                   </Button>
                 </form>
               </TabsContent>
