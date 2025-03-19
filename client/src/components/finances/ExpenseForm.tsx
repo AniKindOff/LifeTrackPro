@@ -29,7 +29,7 @@ const CATEGORIES = [
 ];
 
 interface ExpenseFormProps {
-  onSubmit: (data: { description: string; amount: number; category: string; date: Date }) => void;
+  onSubmit: (data: { description: string; amount: string; category: string; date: string }) => void;
 }
 
 export default function ExpenseForm({ onSubmit }: ExpenseFormProps) {
@@ -37,15 +37,25 @@ export default function ExpenseForm({ onSubmit }: ExpenseFormProps) {
     resolver: zodResolver(insertExpenseSchema),
     defaultValues: {
       description: "",
-      amount: 0,
+      amount: "",
       category: "",
-      date: new Date()
+      date: new Date().toISOString().split('T')[0]
     }
   });
 
+  const handleSubmit = (data: any) => {
+    // Convert amount to string with 2 decimal places
+    const formattedData = {
+      ...data,
+      amount: Number(data.amount).toFixed(2),
+      date: new Date(data.date).toISOString().split('T')[0]
+    };
+    onSubmit(formattedData);
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
         <FormField
           control={form.control}
           name="description"
@@ -71,7 +81,7 @@ export default function ExpenseForm({ onSubmit }: ExpenseFormProps) {
                   type="number"
                   step="0.01"
                   {...field}
-                  onChange={e => field.onChange(parseFloat(e.target.value))}
+                  onChange={e => field.onChange(e.target.value)} 
                 />
               </FormControl>
               <FormMessage />
@@ -114,8 +124,8 @@ export default function ExpenseForm({ onSubmit }: ExpenseFormProps) {
                 <Input 
                   type="date"
                   {...field}
-                  value={field.value instanceof Date ? field.value.toISOString().split('T')[0] : ''}
-                  onChange={e => field.onChange(new Date(e.target.value))}
+                  value={field.value}
+                  onChange={e => field.onChange(e.target.value)}
                 />
               </FormControl>
               <FormMessage />

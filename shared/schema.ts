@@ -39,9 +39,9 @@ export const expenses = pgTable("expenses", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull(),
   description: text("description").notNull(),
-  amount: decimal("amount").notNull(),
+  amount: text("amount").notNull(), // Change to text to handle decimal strings
   category: text("category").notNull(),
-  date: date("date").notNull(),
+  date: text("date").notNull(), // Change to text to store date as ISO string
 });
 
 export const budgets = pgTable("budgets", {
