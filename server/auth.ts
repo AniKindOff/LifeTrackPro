@@ -88,12 +88,13 @@ export function setupAuth(app: Express) {
 
       req.login(user, (err) => {
         if (err) {
-          next(err);
+          res.status(500).json({ message: "Login failed after registration" });
           return;
         }
         res.status(201).json(user);
       });
     } catch (error) {
+      console.error('Registration error:', error);
       res.status(500).json({ message: error instanceof Error ? error.message : "Registration failed" });
     }
   });
