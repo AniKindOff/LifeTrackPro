@@ -3,6 +3,7 @@ import { createServer } from "http";
 import { storage } from "./storage";
 import { insertHabitSchema, insertHabitLogSchema, insertExpenseSchema, insertBudgetSchema } from "@shared/schema";
 import { detectLanguage, generateChatResponse } from './services/chatbot';
+import { generateHabitInsights, generateFinanceInsights } from './services/insights';
 
 export async function registerRoutes(app: Express) {
   // Habits
@@ -118,6 +119,36 @@ export async function registerRoutes(app: Express) {
       });
     }
   });
+
+  // Insights routes
+  app.get("/api/insights/habits", async (_req, res) => {
+    try {
+      const habits = await storage.getHabits(1); // Using default user ID
+      const insights = await generateHabitInsights(habits);
+      res.json(insights);
+    } catch (error) {
+      console.error('Error generating habit insights:', error);
+      res.status(500).json({
+        message: "Could not generate habit insights",
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  app.get("/api/insights/finances", async (_req, res) => {
+    try {
+      const expenses = await storage.getExpenses(1); // Using default user ID
+      const insights = await generateFinanceInsights(expenses);
+      res.json(insights);
+    } catch (error) {
+      console.error('Error generating finance insights:', error);
+      res.status(500).json({
+        message: "Could not generate finance insights",
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
 
   const httpServer = createServer(app);
   return httpServer;

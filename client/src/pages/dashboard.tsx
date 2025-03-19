@@ -5,6 +5,8 @@ import FinanceWidget from "@/components/dashboard/FinanceWidget";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { Habit, Expense } from "@shared/schema";
 import { Card } from "@/components/ui/card";
+import InsightsWidget from "@/components/dashboard/InsightsWidget";
+import { Link } from "wouter";
 
 export default function Dashboard() {
   const habits = useQuery<Habit[]>({ 
@@ -43,21 +45,23 @@ export default function Dashboard() {
           <Card className="p-6">
             <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
             <div className="grid grid-cols-2 gap-4">
-              <button className="p-4 bg-primary/10 rounded-lg text-primary hover:bg-primary/20 transition-colors">
-                Add Habit
-              </button>
-              <button className="p-4 bg-primary/10 rounded-lg text-primary hover:bg-primary/20 transition-colors">
-                Log Expense
-              </button>
+              <Link href="/habits">
+                <button className="w-full p-4 bg-primary/10 rounded-lg text-primary hover:bg-primary/20 transition-colors">
+                  Add Habit
+                </button>
+              </Link>
+              <Link href="/finances">
+                <button className="w-full p-4 bg-primary/10 rounded-lg text-primary hover:bg-primary/20 transition-colors">
+                  Log Expense
+                </button>
+              </Link>
             </div>
           </Card>
 
-          <Card className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Tips & Insights</h2>
-            <p className="text-gray-600 dark:text-gray-400">
-              Pro tip: Track your habits daily for better results!
-            </p>
-          </Card>
+          <div className="space-y-6">
+            <InsightsWidget type="habits" />
+            <InsightsWidget type="finances" />
+          </div>
         </div>
       </main>
     </div>
