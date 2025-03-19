@@ -100,8 +100,6 @@ export function useAuth() {
   return context;
 }
 
-type LoginData = Pick<InsertUser, "email" | "password">;
-
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
