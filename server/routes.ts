@@ -83,30 +83,40 @@ export async function registerRoutes(app: Express) {
   app.post("/api/chat/messages", async (req, res) => {
     const { content } = req.body;
 
-    // Detect language
-    const language = await detectLanguage(content);
+    try {
+      // Detect language
+      const language = await detectLanguage(content);
 
-    // Save user message
-    const userMessage = await storage.createChatMessage({
-      role: 'user',
-      content,
-      language,
-      timestamp: new Date().toISOString()
-    });
+      // Save user message
+      const userMessage = await storage.createChatMessage({
+        userId: 1, // Default user ID for development
+        role: 'user',
+        content,
+        language,
+        timestamp: new Date().toISOString()
+      });
 
-    // Generate response
-    const messages = await storage.getChatMessages();
-    const response = await generateChatResponse(messages, language);
+      // Generate response
+      const messages = await storage.getChatMessages();
+      const response = await generateChatResponse(messages, language);
 
-    // Save assistant response
-    const assistantMessage = await storage.createChatMessage({
-      role: 'assistant',
-      content: response,
-      language,
-      timestamp: new Date().toISOString()
-    });
+      // Save assistant response
+      const assistantMessage = await storage.createChatMessage({
+        userId: 1, // Default user ID for development
+        role: 'assistant',
+        content: response,
+        language,
+        timestamp: new Date().toISOString()
+      });
 
-    res.json([userMessage, assistantMessage]);
+      res.json([userMessage, assistantMessage]);
+    } catch (error) {
+      console.error('Error in chat processing:', error);
+      res.status(500).json({
+        message: "Could not process chat message",
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
   });
 
   const httpServer = createServer(app);

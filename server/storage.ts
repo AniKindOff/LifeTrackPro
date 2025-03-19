@@ -64,7 +64,12 @@ export class MemStorage implements IStorage {
 
   async createHabit(habit: InsertHabit): Promise<Habit> {
     const id = this.currentIds.habits++;
-    const newHabit = { ...habit, id, isArchived: false };
+    const newHabit = { 
+      ...habit, 
+      id, 
+      isArchived: false,
+      streak: 0 // Add default streak
+    };
     this.habits.set(id, newHabit);
     return newHabit;
   }
@@ -122,7 +127,13 @@ export class MemStorage implements IStorage {
 
   async createChatMessage(message: InsertChatMessage): Promise<ChatMessage> {
     const id = this.currentIds.chatMessages++;
-    const newMessage = { ...message, id };
+    // For development, use a default userId of 1
+    const newMessage = { 
+      ...message, 
+      id,
+      userId: 1, // Default user ID for development
+      language: message.language || 'en' // Ensure language is set
+    };
     this.chatMessages.set(id, newMessage);
     return newMessage;
   }
