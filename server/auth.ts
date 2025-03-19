@@ -44,9 +44,9 @@ export function setupAuth(app: Express) {
   app.use(passport.session());
 
   passport.use(
-    new LocalStrategy(async (username, password, done) => {
+    new LocalStrategy({ usernameField: 'email' }, async (email, password, done) => {
       try {
-        const user = await storage.getUserByEmail(username);
+        const user = await storage.getUserByEmail(email);
         if (!user || !(await comparePasswords(password, user.password))) {
           return done(null, false, { message: "Invalid credentials" });
         }
@@ -92,10 +92,10 @@ export function setupAuth(app: Express) {
     if (!req.user) {
       return res.status(401).json({ message: "Authentication failed" });
     }
-    
+
     // Update last login and streak
     const user = req.user as SelectUser;
-    storage.updateUserStreak(user.id, user.streak + 1);
+    storage.updateUserStreak(user.id, (user.streak || 0) + 1);
     res.json(req.user);
   });
 
