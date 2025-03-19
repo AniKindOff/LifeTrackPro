@@ -2,6 +2,7 @@ import { Express } from "express";
 import { createServer } from "http";
 import { storage } from "./storage";
 import { insertHabitSchema, insertHabitLogSchema, insertExpenseSchema, insertBudgetSchema } from "@shared/schema";
+import { detectLanguage, generateChatResponse } from './services/chatbot';
 
 export async function registerRoutes(app: Express) {
   // Habits
@@ -71,6 +72,41 @@ export async function registerRoutes(app: Express) {
     }
     const budget = await storage.createBudget(result.data);
     res.json(budget);
+  });
+
+  // Chat routes
+  app.get("/api/chat/messages", async (_req, res) => {
+    const messages = await storage.getChatMessages();
+    res.json(messages);
+  });
+
+  app.post("/api/chat/messages", async (req, res) => {
+    const { content } = req.body;
+
+    // Detect language
+    const language = await detectLanguage(content);
+
+    // Save user message
+    const userMessage = await storage.createChatMessage({
+      role: 'user',
+      content,
+      language,
+      timestamp: new Date().toISOString()
+    });
+
+    // Generate response
+    const messages = await storage.getChatMessages();
+    const response = await generateChatResponse(messages, language);
+
+    // Save assistant response
+    const assistantMessage = await storage.createChatMessage({
+      role: 'assistant',
+      content: response,
+      language,
+      timestamp: new Date().toISOString()
+    });
+
+    res.json([userMessage, assistantMessage]);
   });
 
   const httpServer = createServer(app);

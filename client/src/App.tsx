@@ -7,6 +7,7 @@ import Dashboard from "@/pages/dashboard";
 import Habits from "@/pages/habits";
 import Finances from "@/pages/finances";
 import NotFound from "@/pages/not-found";
+import ChatInterface from "@/components/chat/ChatInterface";
 
 function Router() {
   return (
@@ -24,6 +25,7 @@ function App() {
     <ThemeProvider defaultTheme="system" storageKey="app-theme">
       <QueryClientProvider client={queryClient}>
         <Router />
+        <ChatInterface />
         <Toaster />
       </QueryClientProvider>
     </ThemeProvider>

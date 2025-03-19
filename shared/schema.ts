@@ -35,19 +35,31 @@ export const budgets = pgTable("budgets", {
   period: text("period").notNull(), // monthly, yearly
 });
 
+// Chat related schemas
+export const chatMessages = pgTable("chat_messages", {
+  id: serial("id").primaryKey(),
+  role: text("role").notNull(), // 'user' or 'assistant'
+  content: text("content").notNull(),
+  timestamp: text("timestamp").notNull(), // Store as ISO string
+  language: text("language").notNull().default('en'),
+});
+
 // Insert schemas
 export const insertHabitSchema = createInsertSchema(habits).omit({ id: true, isArchived: true });
 export const insertHabitLogSchema = createInsertSchema(habitLogs).omit({ id: true });
 export const insertExpenseSchema = createInsertSchema(expenses).omit({ id: true });
 export const insertBudgetSchema = createInsertSchema(budgets).omit({ id: true });
+export const insertChatMessageSchema = createInsertSchema(chatMessages).omit({ id: true });
 
 // Types
 export type Habit = typeof habits.$inferSelect;
 export type HabitLog = typeof habitLogs.$inferSelect;
 export type Expense = typeof expenses.$inferSelect;
 export type Budget = typeof budgets.$inferSelect;
+export type ChatMessage = typeof chatMessages.$inferSelect;
 
 export type InsertHabit = z.infer<typeof insertHabitSchema>;
 export type InsertHabitLog = z.infer<typeof insertHabitLogSchema>;
 export type InsertExpense = z.infer<typeof insertExpenseSchema>;
 export type InsertBudget = z.infer<typeof insertBudgetSchema>;
+export type InsertChatMessage = z.infer<typeof insertChatMessageSchema>;

@@ -2,7 +2,8 @@ import {
   type Habit, type InsertHabit,
   type HabitLog, type InsertHabitLog,
   type Expense, type InsertExpense,
-  type Budget, type InsertBudget
+  type Budget, type InsertBudget,
+  type ChatMessage, type InsertChatMessage
 } from "@shared/schema";
 
 export interface IStorage {
@@ -11,18 +12,22 @@ export interface IStorage {
   getHabit(id: number): Promise<Habit | undefined>;
   createHabit(habit: InsertHabit): Promise<Habit>;
   archiveHabit(id: number): Promise<void>;
-  
+
   // Habit Logs
   getHabitLogs(habitId: number): Promise<HabitLog[]>;
   createHabitLog(log: InsertHabitLog): Promise<HabitLog>;
-  
+
   // Expenses
   getExpenses(): Promise<Expense[]>;
   createExpense(expense: InsertExpense): Promise<Expense>;
-  
+
   // Budgets
   getBudgets(): Promise<Budget[]>;
   createBudget(budget: InsertBudget): Promise<Budget>;
+
+  // Chat Messages
+  getChatMessages(): Promise<ChatMessage[]>;
+  createChatMessage(message: InsertChatMessage): Promise<ChatMessage>;
 }
 
 export class MemStorage implements IStorage {
@@ -30,6 +35,7 @@ export class MemStorage implements IStorage {
   private habitLogs: Map<number, HabitLog>;
   private expenses: Map<number, Expense>;
   private budgets: Map<number, Budget>;
+  private chatMessages: Map<number, ChatMessage>;
   private currentIds: { [key: string]: number };
 
   constructor() {
@@ -37,11 +43,13 @@ export class MemStorage implements IStorage {
     this.habitLogs = new Map();
     this.expenses = new Map();
     this.budgets = new Map();
+    this.chatMessages = new Map();
     this.currentIds = {
       habits: 1,
       habitLogs: 1,
       expenses: 1,
-      budgets: 1
+      budgets: 1,
+      chatMessages: 1
     };
   }
 
@@ -104,6 +112,19 @@ export class MemStorage implements IStorage {
     const newBudget = { ...budget, id };
     this.budgets.set(id, newBudget);
     return newBudget;
+  }
+
+  // Chat Messages
+  async getChatMessages(): Promise<ChatMessage[]> {
+    return Array.from(this.chatMessages.values())
+      .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+  }
+
+  async createChatMessage(message: InsertChatMessage): Promise<ChatMessage> {
+    const id = this.currentIds.chatMessages++;
+    const newMessage = { ...message, id };
+    this.chatMessages.set(id, newMessage);
+    return newMessage;
   }
 }
 
