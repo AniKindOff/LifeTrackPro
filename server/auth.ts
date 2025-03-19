@@ -69,6 +69,10 @@ export function setupAuth(app: Express) {
 
   app.post("/api/register", async (req, res, next) => {
     try {
+      if (!req.body.email || !req.body.password || !req.body.username) {
+        return res.status(400).json({ message: "Missing required fields" });
+      }
+
       const existingUser = await storage.getUserByEmail(req.body.email);
       if (existingUser) {
         return res.status(400).json({ message: "Email already registered" });
@@ -80,11 +84,13 @@ export function setupAuth(app: Express) {
       });
 
       req.login(user, (err) => {
-        if (err) return next(err);
+        if (err) {
+          return res.status(500).json({ message: "Login failed after registration" });
+        }
         res.status(201).json(user);
       });
     } catch (error) {
-      next(error);
+      res.status(500).json({ message: error instanceof Error ? error.message : "Registration failed" });
     }
   });
 
