@@ -1,10 +1,47 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { setupAuth } from "./auth";
+import cors from 'cors';
+import { storage } from "./storage";
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Get __dirname equivalent in ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
+
+// Set up CORS with credentials support
+app.use(cors({
+  origin: ['http://localhost:3000', 'http://localhost:5173', 'http://192.168.0.106:3000'],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Set up authentication
+setupAuth(app);
+
+// Load dummy data if available
+const dummyDataPath = path.join(__dirname, 'data', 'dummy-data.json');
+if (fs.existsSync(dummyDataPath)) {
+  try {
+    const dummyData = JSON.parse(fs.readFileSync(dummyDataPath, 'utf8'));
+    storage.loadDummyData(dummyData);
+    log('Loaded dummy data successfully');
+  } catch (error) {
+    console.error('Failed to load dummy data:', error);
+  }
+} else {
+  log('No dummy data found at ' + dummyDataPath);
+  log('Run "node server/scripts/generate-dummy-data.js" to generate dummy data');
+}
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -56,15 +93,11 @@ app.use((req, res, next) => {
     serveStatic(app);
   }
 
-  // ALWAYS serve the app on port 5000
+  // ALWAYS serve the app on port 3000
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
-  const port = 5000;
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
-    log(`Server running at http://0.0.0.0:${port}`);
+  const port = 3000;
+  server.listen(port, () => {
+    log(`Server running at http://localhost:${port}`);
   });
 })();

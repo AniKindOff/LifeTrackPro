@@ -1,0 +1,182 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "DemoUser",
+      "email": "demo@example.com",
+      "password": "$2b$10$dummyhashedpassword",
+      "avatar": null,
+      "theme": "system",
+      "streak": 12,
+      "lastLogin": "2024-03-21T00:00:00.000Z",
+      "createdAt": "2024-02-20T00:00:00.000Z"
+    }
+  ],
+  "habits": [
+    {
+      "id": 1,
+      "userId": 1,
+      "name": "Morning Meditation",
+      "description": "Start the day with 10 minutes of meditation",
+      "frequency": "daily",
+      "target": 1,
+      "streak": 7,
+      "isArchived": false
+    },
+    {
+      "id": 2,
+      "userId": 1,
+      "name": "Read Books",
+      "description": "Read for personal development",
+      "frequency": "daily",
+      "target": 30,
+      "streak": 5,
+      "isArchived": false
+    },
+    {
+      "id": 3,
+      "userId": 1,
+      "name": "Exercise",
+      "description": "Cardio or strength training",
+      "frequency": "weekly",
+      "target": 3,
+      "streak": 3,
+      "isArchived": false
+    },
+    {
+      "id": 4,
+      "userId": 1,
+      "name": "Drink Water",
+      "description": "Stay hydrated throughout the day",
+      "frequency": "daily",
+      "target": 8,
+      "streak": 12,
+      "isArchived": false
+    }
+  ],
+  "habitLogs": [
+    {
+      "id": 1,
+      "habitId": 1,
+      "date": "2024-03-21",
+      "value": 1
+    },
+    {
+      "id": 2,
+      "habitId": 1,
+      "date": "2024-03-20",
+      "value": 1
+    },
+    {
+      "id": 3,
+      "habitId": 1,
+      "date": "2024-03-19",
+      "value": 1
+    },
+    {
+      "id": 4,
+      "habitId": 2,
+      "date": "2024-03-21",
+      "value": 30
+    },
+    {
+      "id": 5,
+      "habitId": 2,
+      "date": "2024-03-20",
+      "value": 35
+    },
+    {
+      "id": 6,
+      "habitId": 4,
+      "date": "2024-03-21",
+      "value": 8
+    }
+  ],
+  "expenses": [
+    {
+      "id": 1,
+      "userId": 1,
+      "description": "Lunch at restaurant",
+      "amount": "25.50",
+      "category": "Food & Dining",
+      "date": "2024-03-21"
+    },
+    {
+      "id": 2,
+      "userId": 1,
+      "description": "Groceries",
+      "amount": "87.32",
+      "category": "Groceries",
+      "date": "2024-03-20"
+    },
+    {
+      "id": 3,
+      "userId": 1,
+      "description": "Gas",
+      "amount": "45.00",
+      "category": "Transportation",
+      "date": "2024-03-19"
+    },
+    {
+      "id": 4,
+      "userId": 1,
+      "description": "Movie ticket",
+      "amount": "15.00",
+      "category": "Entertainment",
+      "date": "2024-03-18"
+    },
+    {
+      "id": 5,
+      "userId": 1,
+      "description": "Rent",
+      "amount": "1200.00",
+      "category": "Housing",
+      "date": "2024-03-01"
+    }
+  ],
+  "budgets": [
+    {
+      "id": 1,
+      "userId": 1,
+      "category": "Food & Dining",
+      "amount": "400.00",
+      "period": "monthly"
+    },
+    {
+      "id": 2,
+      "userId": 1,
+      "category": "Entertainment",
+      "amount": "200.00",
+      "period": "monthly"
+    }
+  ],
+  "chatMessages": [
+    {
+      "id": 1,
+      "userId": 1,
+      "role": "user",
+      "content": "How am I doing with my habits?",
+      "timestamp": "2024-03-21T10:00:00.000Z",
+      "language": "en"
+    },
+    {
+      "id": 2,
+      "userId": 1,
+      "role": "assistant",
+      "content": "You're doing great! Your meditation habit has a 7-day streak, and you've been consistent with your water intake. Keep it up!",
+      "timestamp": "2024-03-21T10:00:05.000Z",
+      "language": "en"
+    }
+  ],
+  "notifications": [
+    {
+      "id": 1,
+      "userId": 1,
+      "type": "streak",
+      "title": "7 Day Streak!",
+      "message": "Congratulations! You've maintained your meditation streak for 7 days. Keep up the great work!",
+      "isRead": false,
+      "createdAt": "2024-03-21T09:00:00.000Z"
+    }
+  ]
+} 

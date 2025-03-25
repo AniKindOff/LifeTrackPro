@@ -227,6 +227,92 @@ export class MemStorage implements IStorage {
       this.notifications.set(id, notification);
     }
   }
+
+  // Load dummy data from a file
+  loadDummyData(data: any): void {
+    console.log('Loading dummy data into storage...');
+    
+    // Reset storage
+    this.users = new Map();
+    this.habits = new Map();
+    this.habitLogs = new Map();
+    this.expenses = new Map();
+    this.budgets = new Map();
+    this.chatMessages = new Map();
+    this.notifications = new Map();
+    
+    // Load users
+    if (data.users && Array.isArray(data.users)) {
+      data.users.forEach(user => {
+        this.users.set(user.id, user);
+        // Update currentIds
+        this.currentIds.users = Math.max(this.currentIds.users, user.id + 1);
+      });
+      console.log(`Loaded ${data.users.length} users`);
+    }
+    
+    // Load habits
+    if (data.habits && Array.isArray(data.habits)) {
+      data.habits.forEach(habit => {
+        this.habits.set(habit.id, habit);
+        // Update currentIds
+        this.currentIds.habits = Math.max(this.currentIds.habits, habit.id + 1);
+      });
+      console.log(`Loaded ${data.habits.length} habits`);
+    }
+    
+    // Load habit logs
+    if (data.habitLogs && Array.isArray(data.habitLogs)) {
+      data.habitLogs.forEach(log => {
+        this.habitLogs.set(log.id, log);
+        // Update currentIds
+        this.currentIds.habitLogs = Math.max(this.currentIds.habitLogs, log.id + 1);
+      });
+      console.log(`Loaded ${data.habitLogs.length} habit logs`);
+    }
+    
+    // Load expenses
+    if (data.expenses && Array.isArray(data.expenses)) {
+      data.expenses.forEach(expense => {
+        this.expenses.set(expense.id, expense);
+        // Update currentIds
+        this.currentIds.expenses = Math.max(this.currentIds.expenses, expense.id + 1);
+      });
+      console.log(`Loaded ${data.expenses.length} expenses`);
+    }
+    
+    // Load budgets
+    if (data.budgets && Array.isArray(data.budgets)) {
+      data.budgets.forEach(budget => {
+        this.budgets.set(budget.id, budget);
+        // Update currentIds
+        this.currentIds.budgets = Math.max(this.currentIds.budgets, budget.id + 1);
+      });
+      console.log(`Loaded ${data.budgets.length} budgets`);
+    }
+    
+    // Load chat messages
+    if (data.chatMessages && Array.isArray(data.chatMessages)) {
+      data.chatMessages.forEach(message => {
+        this.chatMessages.set(message.id, message);
+        // Update currentIds
+        this.currentIds.chatMessages = Math.max(this.currentIds.chatMessages, message.id + 1);
+      });
+      console.log(`Loaded ${data.chatMessages.length} chat messages`);
+    }
+    
+    // Load notifications
+    if (data.notifications && Array.isArray(data.notifications)) {
+      data.notifications.forEach(notification => {
+        this.notifications.set(notification.id, notification);
+        // Update currentIds
+        this.currentIds.notifications = Math.max(this.currentIds.notifications, notification.id + 1);
+      });
+      console.log(`Loaded ${data.notifications.length} notifications`);
+    }
+    
+    console.log('Dummy data loaded successfully');
+  }
 }
 
 export const storage = new MemStorage();

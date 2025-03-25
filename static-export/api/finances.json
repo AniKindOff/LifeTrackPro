@@ -1,0 +1,45 @@
+{
+  "expenses": [
+    {
+      "id": "1",
+      "description": "Groceries",
+      "amount": 75.23,
+      "date": "2023-11-05T14:30:00Z",
+      "category": "Food"
+    },
+    {
+      "id": "2",
+      "description": "Internet Bill",
+      "amount": 59.99,
+      "date": "2023-11-01T09:00:00Z",
+      "category": "Utilities"
+    },
+    {
+      "id": "3",
+      "description": "Movie Tickets",
+      "amount": 25.5,
+      "date": "2023-11-07T19:15:00Z",
+      "category": "Entertainment"
+    }
+  ],
+  "budgets": [
+    {
+      "id": "1",
+      "category": "Food",
+      "limit": 400,
+      "current": 250.75
+    },
+    {
+      "id": "2",
+      "category": "Entertainment",
+      "limit": 150,
+      "current": 85.5
+    },
+    {
+      "id": "3",
+      "category": "Utilities",
+      "limit": 300,
+      "current": 225.65
+    }
+  ]
+}

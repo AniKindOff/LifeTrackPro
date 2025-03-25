@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Riya AI Assistant - LifeTrackPro</title>
+  <link rel="icon" type="image/svg+xml" href="logo.svg">
+  <link rel="stylesheet" href="riya-enhanced.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Animated background -->
+  <div class="animated-background">
+    <div class="blob"></div>
+    <div class="blob"></div>
+  </div>
+
+  <!-- Loading bar for API responses -->
+  <div class="loading-bar"></div>
+
+  <div class="header">
+    <div class="header-logo">
+      <img src="logo.svg" alt="LifeTrackPro Logo">
+      <h1>Riya AI Assistant</h1>
+    </div>
+    <div class="header-actions">
+      <button class="settings-button" id="settingsButton">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+        <span>Settings</span>
+      </button>
+      <button class="theme-toggle" id="themeToggle">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+  
+  <div class="chat-container">
+    <div class="messages" id="messages">
+      <div class="message bot">
+        Hello! I'm Riya, your AI assistant. I can help you manage tasks, track habits, and boost productivity. How can I assist you today?
+      </div>
+    </div>
+    
+    <div class="input-area">
+      <button class="voice-button" id="voiceButton">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+          <line x1="12" y1="19" x2="12" y2="23"></line>
+          <line x1="8" y1="23" x2="16" y2="23"></line>
+        </svg>
+      </button>
+      <input type="text" id="messageInput" placeholder="Type your message..." autocomplete="off">
+      <button class="send-button" id="sendButton">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </div>
+  </div>
+  
+  <!-- Toast notification -->
+  <div class="toast" id="toast"></div>
+  
+  <!-- Settings Modal -->
+  <div class="modal" id="settingsModal">
+    <div class="modal-content">
+      <h2>Riya Settings</h2>
+      
+      <div class="form-group">
+        <label for="apiKeyInput">Gemini API Key</label>
+        <input type="password" id="apiKeyInput" placeholder="Enter your Gemini API key">
+      </div>
+      
+      <div class="form-group">
+        <label for="voiceSelect">Voice</label>
+        <select id="voiceSelect" class="form-control">
+          <option value="">Default Voice</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <label for="languageSelect">Language</label>
+        <select id="languageSelect" class="form-control">
+          <option value="en-US">English (US)</option>
+          <option value="es-ES">Spanish</option>
+          <option value="fr-FR">French</option>
+          <option value="de-DE">German</option>
+          <option value="ja-JP">Japanese</option>
+          <option value="zh-CN">Chinese (Simplified)</option>
+          <option value="hi-IN">Hindi</option>
+        </select>
+      </div>
+      
+      <div class="form-group">
+        <div class="slider-control">
+          <label>
+            Speech Rate
+            <span class="slider-value" id="rateValue">1.0</span>
+          </label>
+          <input type="range" id="rateSlider" min="0.5" max="2" value="1" step="0.1">
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <div class="slider-control">
+          <label>
+            Speech Pitch
+            <span class="slider-value" id="pitchValue">1.0</span>
+          </label>
+          <input type="range" id="pitchSlider" min="0.5" max="2" value="1" step="0.1">
+        </div>
+      </div>
+      
+      <div class="form-actions">
+        <button class="btn btn-secondary" id="cancelSettingsButton">Cancel</button>
+        <button class="btn btn-primary" id="saveSettingsButton">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="riya-gemini.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // DOM Elements
+      const messagesContainer = document.getElementById('messages');
+      const messageInput = document.getElementById('messageInput');
+      const sendButton = document.getElementById('sendButton');
+      const voiceButton = document.getElementById('voiceButton');
+      const settingsButton = document.getElementById('settingsButton');
+      const settingsModal = document.getElementById('settingsModal');
+      const apiKeyInput = document.getElementById('apiKeyInput');
+      const saveSettingsButton = document.getElementById('saveSettingsButton');
+      const cancelSettingsButton = document.getElementById('cancelSettingsButton');
+      const themeToggle = document.getElementById('themeToggle');
+      const voiceSelect = document.getElementById('voiceSelect');
+      const languageSelect = document.getElementById('languageSelect');
+      const toast = document.getElementById('toast');
+      const body = document.body;
+      const loadingBar = document.querySelector('.loading-bar');
+      const rateSlider = document.getElementById('rateSlider');
+      const pitchSlider = document.getElementById('pitchSlider');
+      const rateValue = document.getElementById('rateValue');
+      const pitchValue = document.getElementById('pitchValue');
+      
+      // State
+      let isListening = false;
+      let speechRecognition = null;
+      let speechSynthesis = window.speechSynthesis;
+      let selectedVoice = null;
+      let isDarkMode = localStorage.getItem('darkMode') === 'true';
+      
+      // Initialize dark mode
+      if (isDarkMode) {
+        document.body.classList.add('dark-mode');
+      }
+      
+      // Toggle dark mode
+      themeToggle.addEventListener('click', function() {
+        isDarkMode = !isDarkMode;
+        document.body.classList.toggle('dark-mode', isDarkMode);
+        localStorage.setItem('darkMode', isDarkMode);
+        
+        // Show toast
+        showToast(isDarkMode ? 'Dark mode enabled' : 'Light mode enabled');
+      });
+      
+      // Initialize API key if saved
+      const savedApiKey = localStorage.getItem('geminiApiKey');
+      if (savedApiKey) {
+        apiKeyInput.value = savedApiKey;
+      }
+      
+      // Show toast notification
+      function showToast(message, type = '') {
+        toast.textContent = message;
+        toast.className = 'toast';
+        if (type) toast.classList.add(type);
+        toast.classList.add('show');
+        
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 3000);
+      }
+      
+      // Populate voices dropdown
+      function populateVoices() {
+        voiceSelect.innerHTML = '<option value="">Default Voice</option>';
+        
+        const voices = speechSynthesis.getVoices();
+        voices.forEach(voice => {
+          const option = document.createElement('option');
+          option.value = voice.name;
+          option.textContent = `${voice.name} (${voice.lang})`;
+          voiceSelect.appendChild(option);
+        });
+        
+        // Set saved voice if any
+        const savedVoice = localStorage.getItem('selectedVoice');
+        if (savedVoice) {
+          voiceSelect.value = savedVoice;
+        }
+      }
+      
+      if (speechSynthesis.onvoiceschanged !== undefined) {
+        speechSynthesis.onvoiceschanged = populateVoices;
+      }
+      
+      populateVoices();
+      
+      // Set saved language if any
+      const savedLanguage = localStorage.getItem('selectedLanguage');
+      if (savedLanguage) {
+        languageSelect.value = savedLanguage;
+      }
+      
+      // Show typing indicator
+      function showTypingIndicator() {
+        const typingIndicator = document.createElement('div');
+        typingIndicator.className = 'typing-indicator';
+        typingIndicator.id = 'typingIndicator';
+        
+        for (let i = 0; i < 3; i++) {
+          const dot = document.createElement('div');
+          dot.className = 'typing-dot';
+          typingIndicator.appendChild(dot);
+        }
+        
+        messagesContainer.appendChild(typingIndicator);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }
+      
+      // Remove typing indicator
+      function removeTypingIndicator() {
+        const typingIndicator = document.getElementById('typingIndicator');
+        if (typingIndicator) {
+          typingIndicator.remove();
+        }
+      }
+      
+      // Add a message to the chat
+      function addMessage(text, isUser = false) {
+        const messageElement = document.createElement('div');
+        messageElement.className = `message ${isUser ? 'user' : 'bot'}`;
+        messageElement.textContent = text;
+        
+        messagesContainer.appendChild(messageElement);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }
+      
+      // Send message to Riya
+      async function sendMessage() {
+        const message = messageInput.value.trim();
+        if (!message) return;
+        
+        // Add user message
+        addMessage(message, true);
+        messageInput.value = '';
+        
+        // Show typing indicator
+        showTypingIndicator();
+        
+        // Show loading animation
+        body.classList.add('loading');
+        
+        try {
+          // Call Gemini API
+          const response = await window.riyaAI.sendMessage(message, text => {
+            // Update for streaming (not yet implemented)
+          });
+          
+          // Remove typing indicator and loading animation
+          removeTypingIndicator();
+          body.classList.remove('loading');
+          
+          // Add bot response
+          addMessage(response.text);
+          
+          // Speak response if speech synthesis is enabled
+          if (localStorage.getItem('speechEnabled') === 'true') {
+            speakText(response.text);
+          }
+        } catch (error) {
+          console.error('Error sending message:', error);
+          removeTypingIndicator();
+          body.classList.remove('loading');
+          addMessage('Sorry, I encountered an error. Please try again later.');
+          showToast('Error connecting to Gemini API', 'error');
+        }
+      }
+      
+      // Speak text using speech synthesis
+      function speakText(text) {
+        if (speechSynthesis) {
+          const utterance = new SpeechSynthesisUtterance(text);
+          
+          // Set selected voice if any
+          const voices = speechSynthesis.getVoices();
+          const savedVoice = localStorage.getItem('selectedVoice');
+          
+          if (savedVoice) {
+            const voice = voices.find(v => v.name === savedVoice);
+            if (voice) {
+              utterance.voice = voice;
+            }
+          }
+          
+          // Set language
+          utterance.lang = localStorage.getItem('selectedLanguage') || 'en-US';
+          
+          // Set rate and pitch
+          utterance.rate = parseFloat(localStorage.getItem('speechRate') || 1);
+          utterance.pitch = parseFloat(localStorage.getItem('speechPitch') || 1);
+          
+          speechSynthesis.speak(utterance);
+        }
+      }
+      
+      // Initialize speech recognition
+      function initSpeechRecognition() {
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+          const SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
+          speechRecognition = new SpeechRecognition();
+          
+          speechRecognition.continuous = false;
+          speechRecognition.interimResults = false;
+          speechRecognition.lang = localStorage.getItem('selectedLanguage') || 'en-US';
+          
+          speechRecognition.onstart = function() {
+            isListening = true;
+            voiceButton.classList.add('listening');
+            showToast('Listening...');
+          };
+          
+          speechRecognition.onend = function() {
+            isListening = false;
+            voiceButton.classList.remove('listening');
+          };
+          
+          speechRecognition.onresult = function(event) {
+            const transcript = event.results[0][0].transcript;
+            messageInput.value = transcript;
+            setTimeout(() => sendMessage(), 500);
+          };
+          
+          speechRecognition.onerror = function(event) {
+            console.error('Speech recognition error:', event.error);
+            isListening = false;
+            voiceButton.classList.remove('listening');
+            showToast('Speech recognition error', 'error');
+          };
+        } else {
+          voiceButton.style.display = 'none';
+          console.log('Speech recognition not supported in this browser');
+        }
+      }
+      
+      initSpeechRecognition();
+      
+      // Toggle speech recognition
+      function toggleSpeechRecognition() {
+        if (!speechRecognition) return;
+        
+        if (isListening) {
+          speechRecognition.stop();
+        } else {
+          speechRecognition.start();
+        }
+      }
+      
+      // Event listeners
+      sendButton.addEventListener('click', function() {
+        sendMessage();
+      });
+      
+      messageInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault(); // Prevent default to avoid newline
+          sendMessage();
+        }
+      });
+      
+      voiceButton.addEventListener('click', toggleSpeechRecognition);
+      
+      // Settings modal
+      settingsButton.addEventListener('click', function() {
+        settingsModal.style.display = 'flex';
+      });
+      
+      cancelSettingsButton.addEventListener('click', function() {
+        settingsModal.style.display = 'none';
+      });
+      
+      saveSettingsButton.addEventListener('click', function() {
+        const apiKey = apiKeyInput.value.trim();
+        if (apiKey) {
+          window.riyaAI.setApiKey(apiKey);
+          showToast('API key saved successfully', 'success');
+        }
+        
+        // Save voice selection
+        localStorage.setItem('selectedVoice', voiceSelect.value);
+        
+        // Save language selection
+        localStorage.setItem('selectedLanguage', languageSelect.value);
+        
+        // Save speech rate and pitch
+        localStorage.setItem('speechRate', rateSlider.value);
+        localStorage.setItem('speechPitch', pitchSlider.value);
+        
+        // Enable speech
+        localStorage.setItem('speechEnabled', 'true');
+        
+        // Update speech recognition language
+        if (speechRecognition) {
+          speechRecognition.lang = languageSelect.value;
+        }
+        
+        settingsModal.style.display = 'none';
+        
+        addMessage('Settings saved successfully! I can now understand and respond to you better.');
+      });
+      
+      // Close modal when clicking outside
+      window.addEventListener('click', function(e) {
+        if (e.target === settingsModal) {
+          settingsModal.style.display = 'none';
+        }
+      });
+      
+      // Window functions for task creation and other actions
+      window.addTaskFromRiya = function(taskName, dueDate) {
+        console.log(`Creating task: ${taskName}, due: ${dueDate}`);
+        showToast(`Task created: ${taskName}`, 'success');
+        // This would integrate with your task management system
+      };
+      
+      window.openMoodTracker = function() {
+        console.log('Opening mood tracker');
+        showToast('Mood tracker opened', 'success');
+        // This would open your mood tracking UI
+      };
+      
+      window.startPomodoro = function() {
+        console.log('Starting Pomodoro timer');
+        showToast('Pomodoro timer started', 'success');
+        // This would start your Pomodoro timer
+      };
+      
+      window.showAnalytics = function() {
+        console.log('Showing analytics');
+        showToast('Analytics opened', 'success');
+        // This would show your analytics dashboard
+      };
+
+      // Focus on input when page loads
+      messageInput.focus();
+
+      // Slider controls
+      rateSlider.addEventListener('input', function() {
+        const value = parseFloat(this.value);
+        rateValue.textContent = value.toFixed(1);
+        localStorage.setItem('speechRate', value);
+      });
+      
+      pitchSlider.addEventListener('input', function() {
+        const value = parseFloat(this.value);
+        pitchValue.textContent = value.toFixed(1);
+        localStorage.setItem('speechPitch', value);
+      });
+      
+      // Initialize slider values from localStorage
+      if (localStorage.getItem('speechRate')) {
+        const savedRate = parseFloat(localStorage.getItem('speechRate'));
+        rateSlider.value = savedRate;
+        rateValue.textContent = savedRate.toFixed(1);
+      }
+      
+      if (localStorage.getItem('speechPitch')) {
+        const savedPitch = parseFloat(localStorage.getItem('speechPitch'));
+        pitchSlider.value = savedPitch;
+        pitchValue.textContent = savedPitch.toFixed(1);
+      }
+    });
+  </script>
+</body>
+</html> 

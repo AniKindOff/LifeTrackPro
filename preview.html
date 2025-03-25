@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LifeTrackPro - Preview</title>
+  <link rel="icon" type="image/png" href="client/public/favicon.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#3b82f6',
+            secondary: '#2563eb',
+            accent: '#7c3aed',
+            background: '#f8fafc',
+            foreground: '#0f172a',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom Animations */
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+
+    .animate-float {
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { box-shadow: 0 0 5px 2px rgba(99, 102, 241, 0.3); }
+      50% { box-shadow: 0 0 15px 5px rgba(99, 102, 241, 0.5); }
+    }
+
+    .pulse-glow {
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+
+    /* Glass effect */
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    /* Card gradient */
+    .card-gradient {
+      background: linear-gradient(120deg, #f8fafc 0%, #f1f5f9 100%);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+  </style>
+</head>
+<body class="bg-background text-foreground">
+  <div class="flex h-screen">
+    <!-- Sidebar -->
+    <div class="w-64 h-full hidden md:block" style="background: linear-gradient(180deg, #2563eb 0%, #3b82f6 100%)">
+      <div class="flex items-center justify-center h-16 border-b border-white/10 px-4">
+        <h1 class="text-white text-xl font-bold">LifeTrackPro</h1>
+      </div>
+      <nav class="mt-6 px-4">
+        <a href="#" class="flex items-center py-2 px-4 text-white bg-white/10 rounded-md mb-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          </svg>
+          Dashboard
+        </a>
+        <a href="#" class="flex items-center py-2 px-4 text-white/70 hover:bg-white/10 rounded-md mb-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+          </svg>
+          Tasks
+        </a>
+        <a href="#" class="flex items-center py-2 px-4 text-white/70 hover:bg-white/10 rounded-md mb-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+          Habits
+        </a>
+        <a href="#" class="flex items-center py-2 px-4 text-white/70 hover:bg-white/10 rounded-md mb-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+          </svg>
+          Analytics
+        </a>
+        <a href="#" class="flex items-center py-2 px-4 text-white/70 hover:bg-white/10 rounded-md mb-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Finances
+        </a>
+      </nav>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="flex-1 overflow-auto p-6">
+      <!-- Dashboard Header -->
+      <div class="flex flex-col space-y-2 md:flex-row md:items-center md:justify-between md:space-y-0 mb-6">
+        <div>
+          <h2 class="text-3xl font-bold tracking-tight">Dashboard</h2>
+          <p class="text-gray-500">
+            Track your progress and stay productive!
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button class="px-4 py-2 flex items-center border border-gray-300 rounded-md text-sm font-medium">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            March 2025
+          </button>
+          <button class="px-4 py-2 flex items-center bg-primary text-white rounded-md text-sm font-medium">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            New Task
+          </button>
+        </div>
+      </div>
+      
+      <!-- Stats Cards -->
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-6">
+        <!-- Task Progress Card -->
+        <div class="bg-white rounded-lg p-4 shadow transform transition-all duration-500 card-gradient">
+          <div class="text-sm font-medium mb-2">Task Progress</div>
+          <div class="flex items-center justify-between">
+            <div class="text-3xl font-bold text-primary">65%</div>
+            <div class="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </div>
+          <div class="mt-4 h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+            <div class="h-full bg-primary rounded-full" style="width: 65%"></div>
+          </div>
+          <p class="mt-2 text-xs text-gray-500">2 of 4 tasks completed</p>
+        </div>
+
+        <!-- Habit Streak Card -->
+        <div class="bg-white rounded-lg p-4 shadow transform transition-all duration-500 card-gradient">
+          <div class="text-sm font-medium mb-2">Habit Streak</div>
+          <div class="flex items-center justify-between">
+            <div class="text-3xl font-bold text-accent">5 days</div>
+            <div class="h-12 w-12 rounded-full bg-accent/10 flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+              </svg>
+            </div>
+          </div>
+          <div class="mt-4 flex space-x-1">
+            <div class="h-2 flex-1 rounded-full bg-accent"></div>
+            <div class="h-2 flex-1 rounded-full bg-accent"></div>
+            <div class="h-2 flex-1 rounded-full bg-accent"></div>
+            <div class="h-2 flex-1 rounded-full bg-accent"></div>
+            <div class="h-2 flex-1 rounded-full bg-accent"></div>
+            <div class="h-2 flex-1 rounded-full bg-gray-200"></div>
+            <div class="h-2 flex-1 rounded-full bg-gray-200"></div>
+          </div>
+          <button class="mt-4 w-full flex items-center justify-center py-1 px-2 border border-gray-300 rounded-md text-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+            </svg>
+            Celebrate Streak
+          </button>
+        </div>
+
+        <!-- Weekly Trends Card -->
+        <div class="bg-white rounded-lg p-4 shadow transform transition-all duration-500 card-gradient">
+          <div class="text-sm font-medium mb-2">Weekly Trends</div>
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-medium">Productivity</span>
+              <span class="text-xs text-primary">+12%</span>
+            </div>
+            <div class="h-1 w-full bg-gray-200 rounded-full overflow-hidden">
+              <div class="h-full bg-primary rounded-full" style="width: 72%"></div>
+            </div>
+            
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-medium">Habits</span>
+              <span class="text-xs text-accent">+8%</span>
+            </div>
+            <div class="h-1 w-full bg-gray-200 rounded-full overflow-hidden">
+              <div class="h-full bg-accent rounded-full" style="width: 65%"></div>
+            </div>
+            
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-medium">Finances</span>
+              <span class="text-xs text-green-500">+15%</span>
+            </div>
+            <div class="h-1 w-full bg-gray-200 rounded-full overflow-hidden">
+              <div class="h-full bg-green-500 rounded-full" style="width: 83%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quote Card -->
+        <div class="bg-white rounded-lg p-4 shadow transform transition-all duration-500 card-gradient">
+          <div class="text-sm font-medium mb-2">Daily Quote</div>
+          <div class="space-y-2">
+            <p class="italic text-sm">"The secret of getting ahead is getting started."</p>
+            <p class="text-xs text-gray-500 text-right">— Mark Twain</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Main Content -->
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <!-- Tasks Widget -->
+        <div class="bg-white rounded-lg shadow">
+          <div class="p-4 border-b">
+            <div class="flex items-center justify-between">
+              <h3 class="text-lg font-medium">Upcoming Tasks</h3>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+              </svg>
+            </div>
+            <p class="text-sm text-gray-500">Stay on top of your important work</p>
+          </div>
+          <div class="p-4">
+            <div class="space-y-4">
+              <!-- Task 1 -->
+              <div class="flex items-start gap-2">
+                <div class="mt-1 h-4 w-4 rounded-full bg-primary flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <div class="grid gap-1">
+                  <p class="text-sm font-medium leading-none line-through text-gray-500">
+                    Complete project proposal
+                  </p>
+                  <p class="text-xs text-gray-500">Due: 2025-03-25</p>
+                </div>
+              </div>
+              
+              <!-- Task 2 -->
+              <div class="flex items-start gap-2">
+                <div class="mt-1 h-4 w-4 rounded-full border border-gray-300"></div>
+                <div class="grid gap-1">
+                  <p class="text-sm font-medium leading-none">
+                    Review quarterly reports
+                  </p>
+                  <p class="text-xs text-gray-500">Due: 2025-03-26</p>
+                </div>
+              </div>
+              
+              <!-- Task 3 -->
+              <div class="flex items-start gap-2">
+                <div class="mt-1 h-4 w-4 rounded-full bg-primary flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <div class="grid gap-1">
+                  <p class="text-sm font-medium leading-none line-through text-gray-500">
+                    Schedule team meeting
+                  </p>
+                  <p class="text-xs text-gray-500">Due: 2025-03-24</p>
+                </div>
+              </div>
+              
+              <!-- Task 4 -->
+              <div class="flex items-start gap-2">
+                <div class="mt-1 h-4 w-4 rounded-full border border-gray-300"></div>
+                <div class="grid gap-1">
+                  <p class="text-sm font-medium leading-none">
+                    Update portfolio website
+                  </p>
+                  <p class="text-xs text-gray-500">Due: 2025-03-27</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="p-4 border-t">
+            <button class="w-full py-1 px-2 border border-gray-300 rounded-md text-sm">
+              View All Tasks
+            </button>
+          </div>
+        </div>
+
+        <!-- Habits Widget -->
+        <div class="bg-white rounded-lg shadow">
+          <div class="p-4 border-b">
+            <div class="flex items-center justify-between">
+              <h3 class="text-lg font-medium">Habits</h3>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <p class="text-sm text-gray-500">Build consistency with daily habits</p>
+          </div>
+          <div class="p-4">
+            <div class="space-y-4">
+              <!-- Habit 1 -->
+              <div class="space-y-2">
+                <div class="flex items-center justify-between">
+                  <p class="text-sm font-medium">Morning Meditation</p>
+                  <p class="text-xs text-gray-500">8/10 days</p>
+                </div>
+                <div class="h-2 w-full bg-accent/20 rounded-full overflow-hidden">
+                  <div class="h-full bg-accent rounded-full" style="width: 80%"></div>
+                </div>
+              </div>
+              
+              <!-- Habit 2 -->
+              <div class="space-y-2">
+                <div class="flex items-center justify-between">
+                  <p class="text-sm font-medium">Read 30 minutes</p>
+                  <p class="text-xs text-gray-500">5/7 days</p>
+                </div>
+                <div class="h-2 w-full bg-accent/20 rounded-full overflow-hidden">
+                  <div class="h-full bg-accent rounded-full" style="width: 71%"></div>
+                </div>
+              </div>
+              
+              <!-- Habit 3 -->
+              <div class="space-y-2">
+                <div class="flex items-center justify-between">
+                  <p class="text-sm font-medium">Exercise</p>
+                  <p class="text-xs text-gray-500">3/5 days</p>
+                </div>
+                <div class="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+                  <div class="h-full bg-gray-400 rounded-full" style="width: 60%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="p-4 border-t">
+            <button class="w-full py-1 px-2 border border-gray-300 rounded-md text-sm">
+              View All Habits
+            </button>
+          </div>
+        </div>
+
+        <!-- Finances Widget -->
+        <div class="bg-white rounded-lg shadow">
+          <div class="p-4 border-b">
+            <div class="flex items-center justify-between">
+              <h3 class="text-lg font-medium">Finances</h3>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <p class="text-sm text-gray-500">Track your spending and savings</p>
+          </div>
+          <div class="p-4">
+            <div class="space-y-4">
+              <div class="flex items-center gap-2">
+                <div class="h-10 w-10 rounded bg-green-500/10 flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <p class="text-sm font-medium">Monthly Budget</p>
+                  <p class="text-2xl font-bold">$2,860</p>
+                </div>
+                <div class="ml-auto text-right">
+                  <p class="text-sm text-gray-500">Spent</p>
+                  <p class="text-sm font-medium">$1,215</p>
+                </div>
+              </div>
+              <div class="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+                <div class="h-full bg-green-500 rounded-full" style="width: 42%"></div>
+              </div>
+              <div class="grid grid-cols-3 gap-2 text-xs">
+                <div class="text-center">
+                  <p class="text-gray-500">Housing</p>
+                  <p class="font-medium">$850</p>
+                </div>
+                <div class="text-center">
+                  <p class="text-gray-500">Food</p>
+                  <p class="font-medium">$210</p>
+                </div>
+                <div class="text-center">
+                  <p class="text-gray-500">Other</p>
+                  <p class="font-medium">$155</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="p-4 border-t">
+            <button class="w-full py-1 px-2 border border-gray-300 rounded-md text-sm">
+              View Finances
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Simple script to simulate loading state
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('LifeTrackPro preview loaded successfully');
+    });
+  </script>
+</body>
+</html> 

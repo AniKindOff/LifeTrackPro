@@ -1,9 +1,23 @@
-import OpenAI from 'openai';
-import { ChatMessage } from '@shared/schema';
+import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from '@google/generative-ai';
+import type { ChatMessage } from '../../shared/schema';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// Create Gemini client with API key from environment or use a mock implementation
+let genAI: GoogleGenerativeAI | null = null;
+let geminiModel: any = null;
+
+// Check if we have a valid API key
+const apiKey = process.env.GEMINI_API_KEY;
+if (apiKey) {
+  try {
+    genAI = new GoogleGenerativeAI(apiKey);
+    geminiModel = genAI.getGenerativeModel({ model: "gemini-pro" });
+    console.log('Gemini client initialized successfully');
+  } catch (error) {
+    console.warn('Failed to initialize Gemini client:', error);
+  }
+} else {
+  console.info('No valid Gemini API key found, using mock implementations');
+}
 
 const RIYA_PERSONA = `
 You are Riya, a friendly and knowledgeable AI assistant for a habit and finance tracking application.
@@ -35,22 +49,50 @@ export async function generateChatResponse(
   language: string = 'en'
 ): Promise<string> {
   try {
-    const conversation = [
-      { role: 'system', content: RIYA_PERSONA } as const,
-      ...messages.map(msg => ({
-        role: msg.role as 'user' | 'assistant',
-        content: msg.content
-      } as const))
-    ];
+    if (!geminiModel) {
+      return "I apologize, but I couldn't generate a response. The AI service is unavailable.";
+    }
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      messages: conversation,
-      temperature: 0.7,
-      max_tokens: 150
+    // Convert messages to Gemini format
+    const chatHistory = messages.slice(0, -1).map(msg => ({
+      role: msg.role === 'user' ? 'user' : 'model',
+      parts: [{ text: msg.content }]
+    }));
+
+    // Get the latest user message
+    const latestMessage = messages[messages.length - 1];
+    
+    // Start a chat
+    const chat = geminiModel.startChat({
+      history: chatHistory,
+      generationConfig: {
+        temperature: 0.7,
+        maxOutputTokens: 150,
+      },
+      safetySettings: [
+        {
+          category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+          threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+        },
+        {
+          category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+          threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+        },
+        {
+          category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+          threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+        },
+        {
+          category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+          threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+        },
+      ],
     });
 
-    return completion.choices[0]?.message?.content || "I apologize, but I couldn't generate a response.";
+    // Send message and get response
+    const result = await chat.sendMessage(RIYA_PERSONA + "\n\n" + latestMessage.content);
+    const response = result.response;
+    return response.text();
   } catch (error) {
     console.error('Error generating chat response:', error);
     return "I'm sorry, but I'm having trouble processing your request right now.";
@@ -60,23 +102,18 @@ export async function generateChatResponse(
 // Function to detect language
 export async function detectLanguage(text: string): Promise<string> {
   try {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      messages: [
-        {
-          role: "system" as const,
-          content: "You are a language detector. Respond with only the ISO 639-1 language code (e.g., 'en', 'es', 'fr', etc.)"
-        },
-        {
-          role: "user" as const,
-          content: `Detect the language of this text: "${text}"`
-        }
-      ],
-      temperature: 0,
-      max_tokens: 2
-    });
+    if (!geminiModel) {
+      return 'en';
+    }
 
-    return completion.choices[0]?.message?.content?.toLowerCase() || 'en';
+    const result = await geminiModel.generateContent(`
+      Detect the language of this text and respond with only the ISO 639-1 language code (e.g., 'en', 'es', 'fr', etc.).
+      Text: "${text}"
+      Language code:
+    `);
+    const response = result.response;
+    const langCode = response.text().trim().toLowerCase();
+    return langCode.length <= 5 ? langCode : 'en';
   } catch (error) {
     console.error('Error detecting language:', error);
     return 'en';
@@ -89,23 +126,17 @@ export async function generateChallenge(
   userPreferences: string
 ): Promise<string> {
   try {
-    const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      messages: [
-        {
-          role: "system" as const,
-          content: "Generate a personalized 7-day challenge based on user's habits and preferences. Make it engaging and achievable."
-        },
-        {
-          role: "user" as const,
-          content: `Current habits: ${habits.join(", ")}. Preferences: ${userPreferences}`
-        }
-      ],
-      temperature: 0.8,
-      max_tokens: 200
-    });
+    if (!geminiModel) {
+      return "Unable to generate a challenge at this time.";
+    }
 
-    return completion.choices[0]?.message?.content || "Unable to generate a challenge at this time.";
+    const result = await geminiModel.generateContent(`
+      Generate a personalized 7-day challenge based on user's habits and preferences. Make it engaging and achievable.
+      Current habits: ${habits.join(", ")}. 
+      Preferences: ${userPreferences}
+    `);
+    const response = result.response;
+    return response.text();
   } catch (error) {
     console.error('Error generating challenge:', error);
     return "I'm sorry, I couldn't create a challenge right now. Please try again later.";

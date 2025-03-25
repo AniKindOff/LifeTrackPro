@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LifeTrackPro - Standalone Runner</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+    .loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #f0f4f8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid #3498db;
+      border-radius: 50%;
+      border-top-color: transparent;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+    .main-frame {
+      width: 100%;
+      height: 100vh;
+      border: none;
+    }
+    .error {
+      color: #e74c3c;
+      margin-top: 20px;
+      max-width: 80%;
+      text-align: center;
+      padding: 20px;
+      background: rgba(255,255,255,0.8);
+      border-radius: 8px;
+    }
+    .controls {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      gap: 10px;
+      z-index: 100;
+    }
+    .btn {
+      background: #3498db;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .btn:hover {
+      background: #2980b9;
+    }
+  </style>
+</head>
+<body>
+  <div class="loader" id="loader">
+    <div class="spinner"></div>
+    <div>Loading LifeTrackPro...</div>
+    <div id="error" class="error" style="display: none;"></div>
+  </div>
+  
+  <div class="controls">
+    <button class="btn" id="loadIndex">Load Index</button>
+    <button class="btn" id="loadRiya">Load Riya</button>
+    <button class="btn" id="toggleFullscreen">Fullscreen</button>
+  </div>
+  
+  <iframe id="appFrame" class="main-frame"></iframe>
+  
+  <script>
+    // Configuration
+    const config = {
+      indexPath: 'index.html',
+      riyaPath: 'riya-chatbot.html',
+      fallbackPath: 'standalone.html'
+    };
+    
+    // DOM Elements
+    const loader = document.getElementById('loader');
+    const errorDisplay = document.getElementById('error');
+    const appFrame = document.getElementById('appFrame');
+    const loadIndexBtn = document.getElementById('loadIndex');
+    const loadRiyaBtn = document.getElementById('loadRiya');
+    const toggleFullscreenBtn = document.getElementById('toggleFullscreen');
+    
+    // Event Listeners
+    loadIndexBtn.addEventListener('click', () => loadContent(config.indexPath));
+    loadRiyaBtn.addEventListener('click', () => loadContent(config.riyaPath));
+    toggleFullscreenBtn.addEventListener('click', toggleFullscreen);
+    
+    // Try to load each option one after another
+    async function init() {
+      try {
+        // First try loading the index.html
+        await loadContent(config.indexPath);
+      } catch (error) {
+        console.error("Failed to load index.html, trying riya-chatbot.html...", error);
+        try {
+          // Then try loading riya-chatbot directly
+          await loadContent(config.riyaPath);
+        } catch (error) {
+          console.error("Failed to load riya-chatbot.html, trying standalone.html...", error);
+          try {
+            // Finally try standalone.html
+            await loadContent(config.fallbackPath);
+          } catch (error) {
+            // If all fails, show error
+            showError("Failed to load any application view. Check if files exist in the correct location.");
+          }
+        }
+      }
+    }
+    
+    // Load content in the iframe
+    function loadContent(path) {
+      return new Promise((resolve, reject) => {
+        showLoader();
+        
+        appFrame.onload = () => {
+          hideLoader();
+          resolve();
+        };
+        
+        appFrame.onerror = (error) => {
+          reject(error);
+        };
+        
+        // Set timeout for loading
+        const timeout = setTimeout(() => {
+          if (loader.style.display !== 'none') {
+            reject(new Error('Loading timeout'));
+          }
+        }, 5000);
+        
+        appFrame.src = path;
+      });
+    }
+    
+    // Helper functions
+    function showLoader() {
+      loader.style.display = 'flex';
+      errorDisplay.style.display = 'none';
+    }
+    
+    function hideLoader() {
+      loader.style.display = 'none';
+    }
+    
+    function showError(message) {
+      errorDisplay.textContent = message;
+      errorDisplay.style.display = 'block';
+    }
+    
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+          showError(`Error attempting to enable fullscreen: ${err.message}`);
+        });
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        }
+      }
+    }
+    
+    // Initialize direct file access script (no server needed)
+    function setupDirectFileAccess() {
+      // Create a virtual API for the Riya chatbot
+      window.riyaAPI = {
+        sendMessage: function(message) {
+          return {
+            text: `I received your message: "${message}". This is running in standalone mode without the Gemini API.`,
+            error: false
+          };
+        }
+      };
+      
+      if (appFrame.contentWindow) {
+        appFrame.contentWindow.riyaAI = window.riyaAPI;
+      }
+    }
+    
+    // Start the application
+    init();
+  </script>
+</body>
+</html> 

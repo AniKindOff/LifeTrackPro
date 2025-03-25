@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LifeTrackPro Logo Generator</title>
+  <style>
+    body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #f8fafc;
+    }
+    
+    .logo-container {
+      width: 200px;
+      height: 200px;
+      position: relative;
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      border-radius: 24px;
+      box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .logo-inner {
+      width: 70%;
+      height: 70%;
+      position: relative;
+    }
+    
+    .checkmark {
+      position: absolute;
+      width: 60%;
+      height: 30%;
+      border-right: 12px solid white;
+      border-bottom: 12px solid white;
+      transform: rotate(45deg);
+      bottom: 40%;
+      left: 20%;
+    }
+    
+    .clock-circle {
+      position: absolute;
+      width: 50%;
+      height: 50%;
+      border: 8px solid white;
+      border-radius: 50%;
+      top: 10%;
+      right: 10%;
+    }
+    
+    .clock-hand {
+      position: absolute;
+      width: 6px;
+      height: 25%;
+      background: white;
+      top: 12%;
+      right: 32%;
+      transform-origin: bottom center;
+      transform: rotate(-30deg);
+    }
+    
+    .clock-hand-short {
+      position: absolute;
+      width: 6px;
+      height: 15%;
+      background: white;
+      top: 22%;
+      right: 32%;
+      transform-origin: bottom center;
+      transform: rotate(60deg);
+    }
+    
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    
+    .controls {
+      margin-top: 20px;
+      text-align: center;
+    }
+    
+    button {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: Arial, sans-serif;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <div class="logo-container pulse" id="logoContainer">
+      <div class="logo-inner">
+        <div class="checkmark"></div>
+        <div class="clock-circle"></div>
+        <div class="clock-hand"></div>
+        <div class="clock-hand-short"></div>
+      </div>
+    </div>
+    
+    <div class="controls">
+      <button id="saveButton">Save Logo as PNG</button>
+    </div>
+  </div>
+  
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+  <script>
+    document.getElementById('saveButton').addEventListener('click', function() {
+      html2canvas(document.getElementById('logoContainer')).then(function(canvas) {
+        const link = document.createElement('a');
+        link.download = 'lifetrackpro-logo.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      });
+    });
+  </script>
+</body>
+</html> 

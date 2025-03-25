@@ -1,0 +1,28 @@
+{
+  "routes": [
+    {
+      "path": "/api/user",
+      "description": "User data"
+    },
+    {
+      "path": "/api/habits",
+      "description": "Habits data"
+    },
+    {
+      "path": "/api/tasks",
+      "description": "Tasks data"
+    },
+    {
+      "path": "/api/finances",
+      "description": "Finances data"
+    },
+    {
+      "path": "/api/analytics",
+      "description": "Analytics data"
+    },
+    {
+      "path": "/api/chat",
+      "description": "Chat messages"
+    }
+  ]
+}

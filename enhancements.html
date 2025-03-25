@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LifeTrackPro Enhancement Ideas</title>
+  <link rel="icon" type="image/svg+xml" href="logo.svg">
+  <style>
+    :root {
+      --primary: #3b82f6;
+      --secondary: #2563eb;
+      --accent: #7c3aed;
+      --background: #f8fafc;
+      --foreground: #0f172a;
+      --muted: #64748b;
+      --card: #ffffff;
+      --border: #e2e8f0;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      background-color: var(--background);
+      color: var(--foreground);
+      line-height: 1.5;
+      padding: 40px 20px;
+    }
+    
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    
+    .header {
+      margin-bottom: 40px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .header img {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 16px;
+    }
+    
+    h1 {
+      font-size: 32px;
+      margin-bottom: 8px;
+      color: var(--foreground);
+    }
+    
+    .subtitle {
+      font-size: 18px;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+    
+    .demo-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 24px;
+      background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 500;
+      margin-top: 16px;
+      transition: all 0.2s;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    
+    .demo-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .demo-button svg {
+      margin-right: 8px;
+    }
+    
+    .sections {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+    
+    .section {
+      background-color: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    
+    .section-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    
+    .section-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+    }
+    
+    .section-title {
+      font-size: 20px;
+      font-weight: 600;
+    }
+    
+    .feature-list {
+      list-style-type: none;
+    }
+    
+    .feature-item {
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+    }
+    
+    .feature-item:last-child {
+      border-bottom: none;
+    }
+    
+    .feature-item::before {
+      content: "•";
+      color: var(--primary);
+      font-weight: bold;
+      margin-right: 8px;
+    }
+
+    .footer {
+      text-align: center;
+      padding-top: 40px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    
+    /* Section colors */
+    .chatbot .section-icon {
+      background-color: rgba(59, 130, 246, 0.1);
+      color: var(--primary);
+    }
+    
+    .gamification .section-icon {
+      background-color: rgba(124, 58, 237, 0.1);
+      color: var(--accent);
+    }
+    
+    .productivity .section-icon {
+      background-color: rgba(16, 185, 129, 0.1);
+      color: #10b981;
+    }
+    
+    .wellness .section-icon {
+      background-color: rgba(236, 72, 153, 0.1);
+      color: #ec4899;
+    }
+    
+    .technical .section-icon {
+      background-color: rgba(245, 158, 11, 0.1);
+      color: #f59e0b;
+    }
+    
+    .analytics .section-icon {
+      background-color: rgba(99, 102, 241, 0.1);
+      color: #6366f1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <img src="logo.svg" alt="LifeTrackPro Logo">
+      <h1>LifeTrackPro Enhancement Ideas</h1>
+      <p class="subtitle">Future improvements to make LifeTrackPro even better</p>
+      
+      <a href="riya-chatbot.html" class="demo-button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M12 8v4"></path>
+          <path d="M12 16h.01"></path>
+        </svg>
+        Try Riya AI Assistant Demo
+      </a>
+    </div>
+    
+    <div class="sections">
+      <!-- Chatbot Section -->
+      <div class="section chatbot">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M12 16v.01"></path>
+              <path d="M12 8a2 2 0 0 1 2 2v1a2 2 0 1 1-4 0v-1a2 2 0 0 1 2-2z"></path>
+            </svg>
+          </div>
+          <h2 class="section-title">Advanced Riya Chatbot</h2>
+        </div>
+        <ul class="feature-list">
+          <li class="feature-item">Integrate with Gemini API directly using the API key</li>
+          <li class="feature-item">Add memory/context to conversations so Riya remembers previous interactions</li>
+          <li class="feature-item">Implement specialized knowledge about productivity, time management, and health</li>
+          <li class="feature-item">Add voice input/output capabilities for hands-free interaction</li>
+          <li class="feature-item">Create customizable chatbot persona (friendly, professional, motivational)</li>
+          <li class="feature-item">Implement multi-language support</li>
+          <li class="feature-item">Add ability to directly create tasks and habits through conversation</li>
+          <li class="feature-item">Include data visualization capabilities (generate charts based on user data)</li>
+          <li class="feature-item">Implement calendar integration to check and manage appointments</li>
+        </ul>
+      </div>
+      
+      <!-- Gamification Section -->
+      <div class="section gamification">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="8" r="7"></circle>
+              <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+            </svg>
+          </div>
+          <h2 class="section-title">Gamification & Rewards</h2>
+        </div>
+        <ul class="feature-list">
+          <li class="feature-item">Create achievement badges for different accomplishments</li>
+          <li class="feature-item">Implement daily/weekly challenges with special rewards</li>
+          <li class="feature-item">Add customizable avatars that evolve with user progress</li>
+          <li class="feature-item">Create a virtual environment/space that improves as tasks are completed</li>
+          <li class="feature-item">Implement a streak protection system (forgiveness points)</li>
+          <li class="feature-item">Add social challenges where friends can compete on specific goals</li>
+          <li class="feature-item">Create a visual timeline of achievements</li>
+        </ul>
+      </div>
+      
+      <!-- Productivity Section -->
+      <div class="section productivity">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          </div>
+          <h2 class="section-title">Productivity Enhancements</h2>
+        </div>
+        <ul class="feature-list">
+          <li class="feature-item">Implement Pomodoro timer with customizable work/break intervals</li>
+          <li class="feature-item">Add time tracking for tasks to analyze productivity patterns</li>
+          <li class="feature-item">Create templates for common task groups (e.g., morning routine, work projects)</li>
+          <li class="feature-item">Add priority scoring system with AI suggestions</li>
+          <li class="feature-item">Implement calendar heat maps showing productivity over time</li>
+          <li class="feature-item">Add goal setting with milestone tracking</li>
+          <li class="feature-item">Create a dashboard with productivity insights and trends</li>
+        </ul>
+      </div>
+      
+      <!-- Wellness Section -->
+      <div class="section wellness">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+            </svg>
+          </div>
+          <h2 class="section-title">Wellness Features</h2>
+        </div>
+        <ul class="feature-list">
+          <li class="feature-item">Add mood tracking with insights and patterns</li>
+          <li class="feature-item">Implement guided meditation/mindfulness exercises</li>
+          <li class="feature-item">Create sleep quality tracker with recommendations</li>
+          <li class="feature-item">Add water/nutrition tracking integrated with tasks</li>
+          <li class="feature-item">Implement exercise routines and tracking</li>
+          <li class="feature-item">Create connection with wearable devices (if applicable)</li>
+          <li class="feature-item">Add gratitude journal feature</li>
+        </ul>
+      </div>
+      
+      <!-- Technical Section -->
+      <div class="section technical">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 6V4"></path>
+              <path d="M12 10v-2"></path>
+              <path d="M16 7.75a2.09 2.09 0 0 1 1 1.74c0 .84-.69 2-2 3-1.31-1-2-2.16-2-3a2.09 2.09 0 0 1 1-1.74"></path>
+              <path d="M7.75 9.5a3.16 3.16 0 0 1 1.74 1c.84 0 2-.69 3-2-1-1.31-2.16-2-3-2a3.16 3.16 0 0 1-1.74 1"></path>
+              <path d="M12 18v2"></path>
+              <path d="M7.5 16a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path>
+              <path d="M16.5 16a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path>
+            </svg>
+          </div>
+          <h2 class="section-title">Technical Improvements</h2>
+        </div>
+        <ul class="feature-list">
+          <li class="feature-item">Implement offline functionality with sync</li>
+          <li class="feature-item">Add data export/import capabilities</li>
+          <li class="feature-item">Create customizable themes and layouts</li>
+          <li class="feature-item">Implement widgets for desktop/mobile</li>
+          <li class="feature-item">Add browser extensions for quick task capture</li>
+          <li class="feature-item">Create mobile app version with notifications</li>
+          <li class="feature-item">Implement cross-device syncing</li>
+          <li class="feature-item">Add automatic backups</li>
+        </ul>
+      </div>
+      
+      <!-- Analytics Section -->
+      <div class="section analytics">
+        <div class="section-header">
+          <div class="section-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="18" y1="20" x2="18" y2="10"></line>
+              <line x1="12" y1="20" x2="12" y2="4"></line>
+              <line x1="6" y1="20" x2="6" y2="14"></line>
+            </svg>
+          </div>
+          <h2 class="section-title">Analytics & Insights</h2>
+        </div>
+        <ul class="feature-list">
+          <li class="feature-item">Create detailed reports on productivity trends</li>
+          <li class="feature-item">Implement AI-powered insights about user habits</li>
+          <li class="feature-item">Add predictive analytics for task completion likelihood</li>
+          <li class="feature-item">Create visualization of interconnected goals and tasks</li>
+          <li class="feature-item">Implement time audits to see where time is being spent</li>
+          <li class="feature-item">Add comparative analytics (this week vs. last week)</li>
+          <li class="feature-item">Create personalized recommendations based on user patterns</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div style="text-align: center; margin-top: 40px;">
+      <p>For Riya, to make it more like ChatGPT or Gemini, we've implemented:</p>
+      <ul style="max-width: 600px; margin: 20px auto; text-align: left; list-style-position: inside;">
+        <li>Direct API integration with Google's Gemini API using your API key</li>
+        <li>Conversation history system to maintain context throughout chat</li>
+        <li>Simulated response streaming for a more natural feel</li>
+        <li>Specialized knowledge about productivity and personal management</li>
+        <li>System prompts that define Riya's personality and capabilities</li>
+        <li>Function calling so Riya can perform actions in the app</li>
+        <li>Typing indicators to show when Riya is generating a response</li>
+        <li>Fallback mechanisms for when the API is unavailable</li>
+      </ul>
+      
+      <a href="riya-chatbot.html" class="demo-button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+        Try the Riya AI Demo Now
+      </a>
+    </div>
+    
+    <div class="footer">
+      <p>© 2025 LifeTrackPro. All enhancement ideas subject to change based on user feedback.</p>
+    </div>
+  </div>
+</body>
+</html> 

@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { insertHabitSchema, insertHabitLogSchema, insertExpenseSchema, insertBudgetSchema } from "@shared/schema";
 import { detectLanguage, generateChatResponse } from './services/chatbot';
 import { generateHabitInsights, generateFinanceInsights } from './services/insights';
+import { generateActivityData } from './services/activity';
 
 export async function registerRoutes(app: Express) {
   // Habits
@@ -63,7 +64,7 @@ export async function registerRoutes(app: Express) {
       if (!result.success) {
         return res.status(400).json({ message: "Invalid log data", errors: result.error.errors });
       }
-      const log = await storage.createHabitLog({...result.data, userId: req.user.id});
+      const log = await storage.createHabitLog(result.data);
       res.json(log);
     } catch (error) {
       console.error('Error creating habit log:', error);
@@ -199,6 +200,97 @@ export async function registerRoutes(app: Express) {
       console.error('Error generating finance insights:', error);
       res.status(500).json({
         message: "Could not generate finance insights",
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // Activity Charts Data
+  app.get("/api/user/activity", async (req, res) => {
+    if (!req.user) return res.status(401).json({ message: "Unauthorized" });
+    try {
+      const habits = await storage.getHabits(req.user.id);
+      const habitLogs = [];
+      
+      // Get logs for each habit
+      for (const habit of habits) {
+        const logs = await storage.getHabitLogs(habit.id);
+        habitLogs.push(...logs);
+      }
+      
+      const expenses = await storage.getExpenses(req.user.id);
+      const activityData = generateActivityData(habits, habitLogs, expenses);
+      
+      res.json(activityData);
+    } catch (error) {
+      console.error('Error generating activity data:', error);
+      res.status(500).json({
+        message: "Could not generate activity data",
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // Daily Reward & Streak Endpoint
+  app.post("/api/user/claim-daily-reward", async (req, res) => {
+    if (!req.user) return res.status(401).json({ message: "Unauthorized" });
+    try {
+      // Get current user streak
+      const currentStreak = req.user.streak || 0;
+      
+      // Update user streak
+      await storage.updateUserStreak(req.user.id, currentStreak + 1);
+      
+      // Create a notification for the streak
+      const streakMilestones = [1, 3, 7, 30, 90, 180, 365];
+      const newStreak = currentStreak + 1;
+      
+      if (streakMilestones.includes(newStreak)) {
+        await storage.createNotification({
+          userId: req.user.id,
+          type: 'streak',
+          title: `${newStreak} Day Streak!`,
+          message: `Congratulations! You've maintained your streak for ${newStreak} days. Keep up the great work!`,
+          createdAt: new Date().toISOString()
+        });
+      }
+      
+      // Return updated user info
+      const updatedUser = await storage.getUser(req.user.id);
+      res.json(updatedUser);
+    } catch (error) {
+      console.error('Error claiming daily reward:', error);
+      res.status(500).json({ 
+        message: "Failed to claim daily reward",
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+
+  // Notifications Endpoint
+  app.get("/api/notifications", async (req, res) => {
+    if (!req.user) return res.status(401).json({ message: "Unauthorized" });
+    try {
+      const notifications = await storage.getNotifications(req.user.id);
+      res.json(notifications);
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+      res.status(500).json({ 
+        message: "Failed to fetch notifications",
+        error: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  });
+  
+  app.post("/api/notifications/:id/read", async (req, res) => {
+    if (!req.user) return res.status(401).json({ message: "Unauthorized" });
+    try {
+      await storage.markNotificationRead(Number(req.params.id));
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+      res.status(500).json({ 
+        message: "Failed to mark notification as read",
         error: error instanceof Error ? error.message : 'Unknown error'
       });
     }

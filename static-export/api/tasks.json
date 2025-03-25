@@ -1,0 +1,29 @@
+[
+  {
+    "id": "1",
+    "title": "Complete Project Proposal",
+    "description": "Finish the draft and send for review",
+    "dueDate": "2023-11-15T17:00:00Z",
+    "priority": "high",
+    "completed": false,
+    "category": "work"
+  },
+  {
+    "id": "2",
+    "title": "Grocery Shopping",
+    "description": "Buy ingredients for the week",
+    "dueDate": "2023-11-10T12:00:00Z",
+    "priority": "medium",
+    "completed": true,
+    "category": "personal"
+  },
+  {
+    "id": "3",
+    "title": "Schedule Dentist Appointment",
+    "description": "Call the office for a checkup",
+    "dueDate": "2023-11-20T09:00:00Z",
+    "priority": "low",
+    "completed": false,
+    "category": "health"
+  }
+]

@@ -1,0 +1,48 @@
+{
+  "habits": {
+    "completionRate": 78,
+    "mostConsistent": "Reading",
+    "leastConsistent": "Exercise",
+    "weeklyProgress": [
+      65,
+      70,
+      75,
+      80,
+      85,
+      80,
+      78
+    ]
+  },
+  "finances": {
+    "spendingByCategory": [
+      {
+        "category": "Food",
+        "amount": 450.25
+      },
+      {
+        "category": "Transportation",
+        "amount": 225.5
+      },
+      {
+        "category": "Entertainment",
+        "amount": 150.75
+      },
+      {
+        "category": "Utilities",
+        "amount": 300
+      },
+      {
+        "category": "Savings",
+        "amount": 500
+      }
+    ],
+    "monthlyTrend": [
+      1250,
+      1300,
+      1450,
+      1275,
+      1325,
+      1400
+    ]
+  }
+}

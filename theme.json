@@ -1,6 +1,18 @@
 {
-  "variant": "professional",
-  "primary": "#2E5BFF",
-  "appearance": "system",
-  "radius": 0.75
+  "variant": "gradient",
+  "primary": "#3b82f6",
+  "secondary": "#7c4dff",
+  "accent": "#7c3aed",
+  "background": "#f8fafc",
+  "foreground": "#0f172a",
+  "cardBackground": "#ffffff",
+  "success": "#10b981",
+  "warning": "#f59e0b",
+  "error": "#ef4444",
+  "info": "#0ea5e9",
+  "muted": "#64748b",
+  "appearance": "light",
+  "radius": 1.2,
+  "sidebarGradient": "linear-gradient(135deg, #3b82f6 0%, #7c4dff 50%, #7c3aed 100%)",
+  "chartColors": ["#7c3aed", "#3b82f6", "#10b981", "#f59e0b", "#0ea5e9"]
 }

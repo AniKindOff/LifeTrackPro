@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeTrackPro - All-in-One Dashboard</title>
+    <style>
+        /* Base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            background: linear-gradient(135deg, #3b82f6 0%, #7c4dff 50%, #7c3aed 100%);
+        }
+        
+        .app-container {
+            position: relative;
+            height: 100vh;
+            width: 100vw;
+        }
+        
+        .app-iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            background-color: white;
+        }
+        
+        /* Loading screen */
+        .loader-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #3b82f6 0%, #7c4dff 50%, #7c3aed 100%);
+            color: white;
+            z-index: 1000;
+            transition: opacity 0.5s ease-in-out;
+        }
+        
+        .loader-content {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 2.5rem;
+            text-align: center;
+        }
+        
+        .loader-content h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .loader-content p {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .progress-bar {
+            width: 12rem;
+            height: 0.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 100px;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: white;
+            border-radius: 100px;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+        
+        /* Hide loader when app is loaded */
+        .hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Fallback content for white screen */
+        #fallback-content {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #3b82f6 0%, #7c4dff 50%, #7c3aed 100%);
+            color: white;
+            z-index: 999;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .fallback-card {
+            max-width: 600px;
+            margin: 4rem auto;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 2.5rem;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .fallback-card h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .fallback-card p {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .fallback-card ul {
+            list-style: none;
+            margin: 1.5rem 0;
+            text-align: left;
+            display: inline-block;
+        }
+
+        .fallback-card li {
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .fallback-card button {
+            background: white;
+            color: #3b82f6;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .fallback-card button:hover {
+            background: rgba(255,255,255,0.9);
+            transform: translateY(-2px);
+        }
+
+        .debug-logs {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            text-align: left;
+            font-family: monospace;
+            font-size: 0.9rem;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .debug-logs p {
+            margin: 0.5rem 0;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- White screen detection fallback -->
+    <div id="fallback-content">
+        <div class="fallback-card">
+            <h1>LifeTrackPro Loading Error</h1>
+            <p>The application failed to load properly. This may be due to:</p>
+            <ul>
+                <li>• Server not running (try starting with npm run dev)</li>
+                <li>• Port conflict (another app is using the same port)</li>
+                <li>• JavaScript errors in the application code</li>
+                <li>• Network connectivity issues</li>
+            </ul>
+            <div>
+                <button onclick="tryAlternativePort()">Try Alternative Port</button>
+                <button onclick="location.reload()">Refresh Page</button>
+            </div>
+            <div class="debug-logs" id="debugLogs">
+                <p>Loading debug information...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading spinner -->
+    <div class="loader-container" id="loader">
+        <div class="loader-content">
+            <h1>LifeTrackPro</h1>
+            <p>Loading your productivity assistant...</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main app iframe -->
+    <div class="app-container">
+        <iframe src="about:blank" id="appFrame" class="app-iframe" allow="geolocation" allowfullscreen></iframe>
+    </div>
+    
+    <script>
+        // Debug logs
+        const debugLogs = document.getElementById('debugLogs');
+        function log(message) {
+            const logEntry = document.createElement('p');
+            logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            debugLogs.appendChild(logEntry);
+            console.log(message);
+        }
+
+        // Find the optimal server
+        const possiblePorts = [5174, 3966, 3000, 5173, 3001];
+        let currentPortIndex = 0;
+        let foundServer = false;
+        
+        // Update progress bar
+        const progressBar = document.getElementById('progressBar');
+        const loader = document.getElementById('loader');
+        const appFrame = document.getElementById('appFrame');
+        const fallbackContent = document.getElementById('fallback-content');
+        let progress = 0;
+        
+        function updateProgress() {
+            progress += 5;
+            if (progress > 100) progress = 100;
+            progressBar.style.width = progress + '%';
+            
+            if (progress < 100 && !foundServer) {
+                setTimeout(updateProgress, 200);
+            }
+        }
+        
+        // Start progress animation
+        updateProgress();
+
+        // Try alternative port when button is clicked
+        function tryAlternativePort() {
+            currentPortIndex = (currentPortIndex + 1) % possiblePorts.length;
+            const newPort = possiblePorts[currentPortIndex];
+            log(`Trying alternative port: ${newPort}`);
+            tryConnectingToPort(newPort);
+        }
+        
+        // Try connecting to a specific port
+        function tryConnectingToPort(port) {
+            log(`Attempting to connect to http://localhost:${port}`);
+            
+            // Show loader again
+            fallbackContent.style.display = 'none';
+            loader.classList.remove('hidden');
+            
+            // Set iframe source to the port
+            appFrame.src = `http://localhost:${port}`;
+            
+            // Check if the page loaded properly after a delay
+            setTimeout(checkIfFrameLoaded, 5000);
+        }
+        
+        // Check if iframe loaded properly
+        function checkIfFrameLoaded() {
+            try {
+                // Try to access iframe content
+                const iframeDoc = appFrame.contentDocument || appFrame.contentWindow.document;
+                
+                // If we can access the document and it has content, it's loaded
+                if (iframeDoc && iframeDoc.body && iframeDoc.body.innerHTML.trim() !== '') {
+                    log('Frame loaded successfully');
+                    foundServer = true;
+                    progress = 100;
+                    progressBar.style.width = '100%';
+                    setTimeout(() => {
+                        loader.classList.add('hidden');
+                    }, 500);
+                } else {
+                    // If blank content, show error
+                    log('Frame loaded but content is empty');
+                    showFallbackContent();
+                }
+            } catch (e) {
+                // Cross-origin error means the page loaded but is from a different origin
+                // This is actually a good sign - it means the server is running
+                log('Cross-origin error - frame likely loaded from valid server');
+                foundServer = true;
+                progress = 100;
+                progressBar.style.width = '100%';
+                setTimeout(() => {
+                    loader.classList.add('hidden');
+                }, 500);
+            }
+        }
+        
+        // Show fallback content when loading fails
+        function showFallbackContent() {
+            log('Loading failed, showing fallback content');
+            fallbackContent.style.display = 'block';
+            loader.classList.add('hidden');
+        }
+        
+        // Start by trying the first port
+        tryConnectingToPort(possiblePorts[0]);
+        
+        // If no successful load after 15 seconds, show error
+        setTimeout(() => {
+            if (!foundServer) {
+                log('Timed out waiting for app to load');
+                showFallbackContent();
+            }
+        }, 15000);
+    </script>
+</body>
+</html> 

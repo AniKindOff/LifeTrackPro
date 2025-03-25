@@ -1,0 +1,26 @@
+[
+  {
+    "id": "1",
+    "content": "How can I set up a new habit?",
+    "sender": "user",
+    "timestamp": "2023-11-08T10:15:00Z"
+  },
+  {
+    "id": "2",
+    "content": "To create a new habit, go to the Habits section and click the \"Add Habit\" button. Fill in the details like name, description, frequency, and goal.",
+    "sender": "assistant",
+    "timestamp": "2023-11-08T10:15:30Z"
+  },
+  {
+    "id": "3",
+    "content": "How do I track my expenses?",
+    "sender": "user",
+    "timestamp": "2023-11-08T10:20:00Z"
+  },
+  {
+    "id": "4",
+    "content": "You can track expenses in the Finances section. Click on \"Add Expense\" and enter the details like amount, category, and date.",
+    "sender": "assistant",
+    "timestamp": "2023-11-08T10:20:30Z"
+  }
+]

@@ -1,0 +1,8 @@
+{
+    "fastLoad":  true,
+    "disableAnalytics":  true,
+    "preferStatic":  true,
+    "enableCache":  true,
+    "preloadAssets":  true,
+    "optimizeBundles":  true
+}
