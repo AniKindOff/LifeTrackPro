@@ -4,6 +4,7 @@ A comprehensive life tracking application with AI assistance, habit tracking, ta
 
 ## Features
 
+### Currently Implemented
 - 🎯 Task & Goal Tracking
 - 💧 Water Intake Monitoring
 - 😊 Mood Tracking
@@ -12,6 +13,20 @@ A comprehensive life tracking application with AI assistance, habit tracking, ta
 - 🎨 Beautiful UI with Dark/Light Mode
 - 🔊 Voice Commands
 - 📱 Responsive Design
+
+### Planned Features
+LifeTrackPro aims to be your all-in-one life management app with 50 powerful features across five categories:
+
+- **Health & Wellness**: Track habits, water, sleep, exercise, mood, and more
+- **Financial Management**: Manage expenses, budgets, savings goals, and investments
+- **Productivity**: To-do lists, Pomodoro timer, goal tracking, and time management
+- **Gamification & Rewards**: Achievements, levels, challenges, and rewards for motivation
+- **Smart Features**: AI assistant, personalized insights, voice commands, and data analysis
+
+See our complete [Features Roadmap](./FEATURES-ROADMAP.md) for details on all 50 planned features.
+
+## Live Demo
+Check out the live demo at [https://lifetrackpro.netlify.app](https://lifetrackpro.netlify.app)
 
 ## Tech Stack
 
